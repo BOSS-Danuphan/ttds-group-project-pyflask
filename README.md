@@ -21,7 +21,7 @@ $ source venv/bin/activate
 ```
 $ pip install -r requirements.txt
 ```
-##### To leave virualenv
+##### Leave virualenv
 ```
 # For Windows (cmd)
 (venv) C:\ttds-group-project-pyflask>.\venv\Scripts\deactivate.bat
