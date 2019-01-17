@@ -21,6 +21,16 @@ $ source venv/bin/activate
 ```
 $ pip install -r requirements.txt
 ```
+##### To leave virualenv
+```
+# For Windows (cmd)
+(venv) C:\ttds-group-project-pyflask>.\venv\Scripts\deactivate.bat
+C:\ttds-group-project-pyflask>
+
+# For Linux
+(venv) $ deactivate
+$
+```
 ## Development
 ##### Add Environment variables
 ```
@@ -32,7 +42,7 @@ Available configurations:
 * `DATETIME_FORMAT`: Display datetime format (default: "%Y-%m-%d %H:%M:%S")
 * `INDEXFILE_PATH`: Path to index file (default: "myindex.txt")
 
-#### Start project
+#### Start project (must be in virualenv)
 ```
 $ python app.py
 ```
