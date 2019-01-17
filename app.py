@@ -29,7 +29,6 @@ def apisearch():
     result = SearchModule.search(q, limit)
     return jsonify({
         **result,
-        # 'tid': ['1111','2222'],
         'ts': datetime.now().strftime(app.config['DATETIME_FORMAT']),
         'message': f'q is {q} and limit is {limit}'
     })

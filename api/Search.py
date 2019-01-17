@@ -4,8 +4,9 @@ from storage import app_index_collection
 class SearchModule(object):
     @staticmethod
     def search(query, limit=None):
+        # Only example on how to call app_index_collection
+        # isloaded = app_index_collection._loaded
         return {
-            'count': 0,
-            'tids':[],
-            'indexloaded': app_index_collection._loaded # Only example on how to call it
+            'total': 0,
+            'data':[]
         }
