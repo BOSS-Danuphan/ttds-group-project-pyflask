@@ -19,7 +19,7 @@ $ source venv/bin/activate
 ```
 ##### Install the dependencies
 ```
-$ pip install -r requirements.txt
+(venv) $ pip install -r requirements.txt
 ```
 ##### Leave virualenv
 ```
@@ -42,7 +42,7 @@ Available configurations:
 * `DATETIME_FORMAT`: Display datetime format (default: "%Y-%m-%d %H:%M:%S")
 * `INDEXFILE_PATH`: Path to index file (default: "myindex.txt")
 
-#### Start project (must be in virualenv)
+#### Start project
 ```
-$ python app.py
+(venv) $ python app.py
 ```
