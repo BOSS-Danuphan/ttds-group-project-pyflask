@@ -1,7 +1,7 @@
 <nav>
   <ul>
     <li><a href="/">Home</a></li>
-    {% set links = ['apisearch'] %}
+    {% set links = ['ping', 'apisearch'] %}
     {% for link in links %}
     <li><a href="{{ url_for(link) }}">{{ link }}</a></li>
     {% endfor %}
