@@ -1,0 +1,19 @@
+<!doctype html>
+<html>
+    <head>
+        {% if title %}
+        <title>{{ title }} - TTDS</title>
+        {% else %}
+        <title>TTDS</title>
+        {% endif %}
+    </head>
+    <body>
+    {% block body -%}
+        {% block navbar -%}
+        {% include 'topmenu.html' ignore missing %}
+        {%- endblock %}
+        {% block content %}{% endblock content %}
+        {% block bodyscript %}{% endblock bodyscript %}
+    {%- endblock body %}
+    </body>
+</html>

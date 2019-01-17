@@ -1,0 +1,7 @@
+{% extends "base.html" %}
+
+{% block content -%}
+    {% for line in content.split('\n') -%}
+    {{line}}<br/>
+    {%- endfor %}
+{%- endblock content %}
