@@ -32,7 +32,7 @@ C:\ttds-group-project-pyflask>
 $
 ```
 ## Development
-##### Add Environment variables
+##### Add local Environment variables
 ```
 $ cp .env-example .env
 ```
