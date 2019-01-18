@@ -24,7 +24,7 @@ $ source venv/bin/activate
 ##### Leave virualenv
 ```
 # For Windows (cmd)
-(venv) C:\ttds-group-project-pyflask>.\venv\Scripts\deactivate.bat
+(venv) C:\ttds-group-project-pyflask>deactivate
 C:\ttds-group-project-pyflask>
 
 # For Linux
@@ -38,7 +38,7 @@ $ cp .env-example .env
 ```
 Available configurations:
 * `SECRET_KEY`: Application secret key
-* `APP_SETTINGS`: can be `config.ProductionConfig` (default), `config.StagingConfig`, `config.DevelopmentConfig`, `config.TestingConfig`
+* `APP_SETTINGS`: can be `config.ProductionConfig` (default, for production), `config.StagingConfig`, `config.DevelopmentConfig` (for local development), `config.TestingConfig`
 * `DATETIME_FORMAT`: Display datetime format (default: "%Y-%m-%d %H:%M:%S")
 * `INDEXFILE_PATH`: Path to index file (default: "myindex.txt")
 
