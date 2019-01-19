@@ -1,6 +1,8 @@
 # Real-time image content search
 Text Technologies for Data Science Group Assignment 2018/19
 
+Web app: https://ttds-group-project.herokuapp.com/
+
 ## Setting up
 ##### Clone the repo
 ```
