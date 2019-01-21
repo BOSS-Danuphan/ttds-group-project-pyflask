@@ -11,6 +11,38 @@ app.app_context().push()
 from storage import app_index_collection
 from api.Search import SearchModule
 
+########################################
+#         Background Streaming         #
+########################################
+from twitter.TwitterStreamListener import TwitterStreamListener
+import tweepy
+from threading import Thread
+thread = None
+stream = None
+
+def backgroundthread():
+    # TODO: Move to new separated file
+    auth = tweepy.OAuthHandler(app.config.get('TWEEPY_CONSUMER_KEY'), app.config.get('TWEEPY_CONSUMER_SECRET'))
+    auth.set_access_token(app.config.get('TWEEPY_ACCESS_TOKEN_KEY'), app.config.get('TWEEPY_ACCESS_TOKEN_SECRET'))
+    api = tweepy.API(auth)
+
+    streamListener = TwitterStreamListener(api)
+
+    global stream
+    stream = tweepy.Stream(auth = api.auth, listener=streamListener)
+    stream.sample()
+
+class StoppableStreamThread(Thread):
+    '''Inject streaming control'''
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+    def streamstop(self):
+        stream.disconnect()
+
+    def streamstopped(self):
+        return stream.running == False
+
 ###########################
 #        Web Route        #
 ###########################
@@ -31,6 +63,42 @@ def apisearch():
         **result,
         'ts': datetime.now().strftime(app.config['DATETIME_FORMAT']),
         'message': f'q is {q} and limit is {limit}'
+    })
+
+@app.route('/api/streamstatus')
+def apistreamstatus():
+    count = app_index_collection._count
+    global thread
+    return jsonify({
+        'streamStatus': 'stopped' if thread is None or thread.streamstopped() else 'running',
+        'ts': datetime.now().strftime(app.config['DATETIME_FORMAT']),
+        'message': f'Collected {count} document(s) in total'
+    })
+
+@app.route('/api/streamstart')
+# TODO: Allow only POST method
+def twstreamstart():
+    global thread
+    if thread is None:
+        thread = StoppableStreamThread(target=backgroundthread)
+        thread.daemon = True
+        thread.start()
+    elif thread.streamstopped():
+        thread = StoppableStreamThread(target=backgroundthread)
+        thread.daemon = True
+        thread.start()
+    return jsonify({
+        'message': 'Stream started !!'
+    })
+
+@app.route('/api/streamstop')
+# TODO: Allow only POST method
+def twstreamstop():
+    global thread
+    if thread is not None:
+        thread.streamstop()
+    return jsonify({
+        'message': 'Stream stopped !!'
     })
 
 if __name__ == '__main__':
