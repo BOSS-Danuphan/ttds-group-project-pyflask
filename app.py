@@ -22,6 +22,8 @@ stream = None
 
 def backgroundthread():
     # TODO: Move to new separated file
+    print('Background thread started')
+
     auth = tweepy.OAuthHandler(app.config.get('TWEEPY_CONSUMER_KEY'), app.config.get('TWEEPY_CONSUMER_SECRET'))
     auth.set_access_token(app.config.get('TWEEPY_ACCESS_TOKEN_KEY'), app.config.get('TWEEPY_ACCESS_TOKEN_SECRET'))
     api = tweepy.API(auth)
@@ -31,6 +33,7 @@ def backgroundthread():
     global stream
     stream = tweepy.Stream(auth = api.auth, listener=streamListener)
     stream.sample()
+    print('Stream started')
 
 class StoppableStreamThread(Thread):
     '''Inject streaming control'''
@@ -39,6 +42,7 @@ class StoppableStreamThread(Thread):
 
     def streamstop(self):
         stream.disconnect()
+        print('Stream stopped')
 
     def streamstopped(self):
         return stream.running == False
