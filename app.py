@@ -32,8 +32,8 @@ def backgroundthread():
 
     global stream
     stream = tweepy.Stream(auth = api.auth, listener=streamListener)
-    stream.sample()
     print('Stream started')
+    stream.sample()
 
 class StoppableStreamThread(Thread):
     '''Inject streaming control'''
