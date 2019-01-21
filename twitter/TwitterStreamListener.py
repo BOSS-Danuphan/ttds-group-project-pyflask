@@ -17,10 +17,9 @@ class TwitterStreamListener(tweepy.StreamListener):
 
         app_index_collection.adddocument(tweet.Text)
 
-        print("***** TWEET #{0} *****".format(self._tweetCount))
-        print(tweet.Text)
-
-        print("\n")
+        # print("***** TWEET #{0} *****".format(self._tweetCount))
+        # print(tweet.Text)
+        # print("\n")
 
     def on_error(self, status_code):
         print("Error: {0}".format(status_code))
