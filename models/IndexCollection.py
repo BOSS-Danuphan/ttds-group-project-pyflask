@@ -3,9 +3,8 @@ class IndexCollection():
     _loaded=None
     _count=0
 
-    def __init__(self, file):
-        if file is not None:
-            self.load()
+    def __init__(self):
+        self.load()
 
     def load(self, file=None):
         '''Reload index data from external source'''

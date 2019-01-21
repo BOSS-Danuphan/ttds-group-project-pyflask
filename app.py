@@ -16,7 +16,7 @@ from api.Search import SearchModule
 ########################################
 from twitter.TwitterStreamListener import TwitterStreamListener
 import tweepy
-from threading import Thread
+from threading import Thread, active_count
 thread = None
 stream = None
 
@@ -70,6 +70,7 @@ def apistreamstatus():
     count = app_index_collection._count
     global thread
     return jsonify({
+        'nThread': active_count(),
         'streamStatus': 'stopped' if thread is None or thread.streamstopped() else 'running',
         'ts': datetime.now().strftime(app.config['DATETIME_FORMAT']),
         'message': f'Collected {count} document(s) in total'

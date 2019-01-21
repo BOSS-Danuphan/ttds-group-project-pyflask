@@ -20,6 +20,8 @@ class TwitterStreamListener(tweepy.StreamListener):
         # print("***** TWEET #{0} *****".format(self._tweetCount))
         # print(tweet.Text)
         # print("\n")
+        if self._tweetCount % 500 == 0:
+            print('_tweetCount', self._tweetCount)
 
     def on_error(self, status_code):
         print("Error: {0}".format(status_code))
