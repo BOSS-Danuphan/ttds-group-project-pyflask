@@ -1,22 +1,16 @@
-import os
-from config import Config
 from flask import Flask, render_template, jsonify, request
+from app import app
 from datetime import datetime
-
-app = Flask(__name__)
-app.config.from_object(os.environ.get('APP_SETTINGS', 'config.ProductionConfig'))
-
-app.app_context().push()
-
-from storage import app_index_collection
-from api.Search import SearchModule
+from app.api.Search import SearchModule
+from app.storage import app_index_collection
 
 ########################################
 #         Background Streaming         #
 ########################################
-from twitter.TwitterStreamListener import TwitterStreamListener
+from app.twitter.TwitterStreamListener import TwitterStreamListener
+from app.twitter.TwitterStreamBuilder import TwitterStreamBuilder
 import tweepy
-from threading import Thread, active_count
+from threading import Thread, active_count, Event
 thread = None
 stream = None
 
@@ -24,28 +18,25 @@ def backgroundthread():
     # TODO: Move to new separated file
     print('Background thread started')
 
-    auth = tweepy.OAuthHandler(app.config.get('TWEEPY_CONSUMER_KEY'), app.config.get('TWEEPY_CONSUMER_SECRET'))
-    auth.set_access_token(app.config.get('TWEEPY_ACCESS_TOKEN_KEY'), app.config.get('TWEEPY_ACCESS_TOKEN_SECRET'))
-    api = tweepy.API(auth)
-
-    streamListener = TwitterStreamListener(api)
-
     global stream
-    stream = tweepy.Stream(auth = api.auth, listener=streamListener)
+    stream = TwitterStreamBuilder.StreamBuilder()
     print('Stream started')
     stream.sample()
 
 class StoppableStreamThread(Thread):
     '''Inject streaming control'''
     def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+        super(StoppableStreamThread, self).__init__(*args, **kwargs)
+        self._stop = Event()
 
-    def streamstop(self):
-        stream.disconnect()
+    def stop(self):
+        if stream is not None:
+            stream.disconnect()
+        self._stop.set()
         print('Stream stopped')
 
-    def streamstopped(self):
-        return stream.running == False
+    def stopped(self):
+        return stream is None or stream.running == False
 
 ###########################
 #        Web Route        #
@@ -75,7 +66,7 @@ def apistreamstatus():
     global thread
     return jsonify({
         'nThread': active_count(),
-        'streamStatus': 'stopped' if thread is None or thread.streamstopped() else 'running',
+        'streamStatus': 'stopped' if thread is None or thread.stopped() else 'running',
         'ts': datetime.now().strftime(app.config['DATETIME_FORMAT']),
         'message': f'Collected {count} document(s) in total'
     })
@@ -88,7 +79,7 @@ def twstreamstart():
         thread = StoppableStreamThread(target=backgroundthread)
         thread.daemon = True
         thread.start()
-    elif thread.streamstopped():
+    elif thread.stopped():
         thread = StoppableStreamThread(target=backgroundthread)
         thread.daemon = True
         thread.start()
@@ -101,10 +92,7 @@ def twstreamstart():
 def twstreamstop():
     global thread
     if thread is not None:
-        thread.streamstop()
+        thread.stop()
     return jsonify({
         'message': 'Stream stopped !!'
     })
-
-if __name__ == '__main__':
-    app.run()

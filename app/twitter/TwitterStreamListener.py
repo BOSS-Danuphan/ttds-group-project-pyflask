@@ -1,6 +1,6 @@
 import tweepy
-from twitter.Tweet import Tweet
-from storage import app_index_collection
+from app.twitter.Tweet import Tweet
+from app.storage import app_index_collection
 
 class TwitterStreamListener(tweepy.StreamListener):
     _tweetCount = 0

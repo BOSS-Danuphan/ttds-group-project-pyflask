@@ -1,4 +1,4 @@
-from storage import app_index_collection
+from app.storage import app_index_collection
 
 class SearchModule(object):
     @staticmethod
