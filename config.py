@@ -12,6 +12,11 @@ class Config(object):
     DATETIME_FORMAT = os.environ.get('DATETIME_FORMAT', "%Y-%m-%d %H:%M:%S")
     INDEXFILE_PATH = os.environ.get("myindex.txt", "myindex.txt")
 
+    TWEEPY_CONSUMER_KEY = os.environ.get('TWEEPY_CONSUMER_KEY', 'consumer-key-here')
+    TWEEPY_CONSUMER_SECRET = os.environ.get('TWEEPY_CONSUMER_SECRET', 'consumer-secret-here')
+    TWEEPY_ACCESS_TOKEN_KEY = os.environ.get('TWEEPY_ACCESS_TOKEN_KEY', 'access-token-key-here')
+    TWEEPY_ACCESS_TOKEN_SECRET = os.environ.get('TWEEPY_ACCESS_TOKEN_SECRET', 'access-token-secret-here')
+
 class ProductionConfig(Config):
     DEBUG = False
 
