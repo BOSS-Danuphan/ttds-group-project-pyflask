@@ -43,8 +43,12 @@ Available configurations:
 * `APP_SETTINGS`: can be `config.ProductionConfig` (default, for production), `config.StagingConfig`, `config.DevelopmentConfig` (for local development), `config.TestingConfig`
 * `DATETIME_FORMAT`: Display datetime format (default: "%Y-%m-%d %H:%M:%S")
 * `INDEXFILE_PATH`: Path to index file (default: "myindex.txt")
+* `TWITTER_CONSUMER_KEY`: Twitter consumer key
+* `TWITTER_CONSUMER_SECRET`: Twitter consumer secret
+* `TWITTER_ACCESS_TOKEN_KEY`: Twitter access key
+* `TWITTER_ACCESS_TOKEN_SECRET`: Twitter access secret
 
 #### Start project
 ```
-(venv) $ python app.py
+(venv) $ python run.py
 ```
