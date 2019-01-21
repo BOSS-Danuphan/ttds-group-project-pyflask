@@ -12,7 +12,7 @@ cd ttds-group-project-pyflask
 ##### Initialize a virtualenv
 ```
 # For Windows (cmd)
-C:\ttds-group-project-pyflask>.\venv\Scripts\activate.bat
+C:\ttds-group-project-pyflask>.\venv\Scripts\activate
 (venv) C:\ttds-group-project-pyflask>
 
 # For Linux
