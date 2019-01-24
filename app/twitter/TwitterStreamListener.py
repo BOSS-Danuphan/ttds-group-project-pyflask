@@ -3,7 +3,7 @@ import tweepy
 from collections import namedtuple
 from app.storage import app_index_collection
 from app.twitter.AnalysedTweet import AnalysedTweet
-from app.twitter.MSVision  import analyse_image
+from app.twitter.MSVision import analyse_image
 
 class TwitterStreamListener(tweepy.StreamListener):
     _tweetCount = 0

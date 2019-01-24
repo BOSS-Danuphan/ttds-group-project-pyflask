@@ -1,7 +1,6 @@
 import re
 from enum import Enum
-from processor import PreProcessor
-from app.storage import app_index_collection
+from app.api.processor import PreProcessor
 
 class QueryType(Enum):
     BOOL = 1

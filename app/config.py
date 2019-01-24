@@ -12,12 +12,12 @@ class Config(object):
     DATETIME_FORMAT = os.environ.get('DATETIME_FORMAT', "%Y-%m-%d %H:%M:%S")
     INDEXFILE_PATH = os.environ.get("myindex.txt", "myindex.txt")
 
-    TWITTER_CONSUMER_KEY = os.environ.get('TWITTER_CONSUMER_KEY', 'consumer-key-here')
-    TWITTER_CONSUMER_SECRET = os.environ.get('TWITTER_CONSUMER_SECRET', 'consumer-secret-here')
-    TWITTER_ACCESS_TOKEN_KEY = os.environ.get('TWITTER_ACCESS_TOKEN_KEY', 'access-token-key-here')
-    TWITTER_ACCESS_TOKEN_SECRET = os.environ.get('TWITTER_ACCESS_TOKEN_SECRET', 'access-token-secret-here')
+    TWITTER_CONSUMER_KEY = os.environ.get('TWITTER_CONSUMER_KEY')
+    TWITTER_CONSUMER_SECRET = os.environ.get('TWITTER_CONSUMER_SECRET')
+    TWITTER_ACCESS_TOKEN_KEY = os.environ.get('TWITTER_ACCESS_TOKEN_KEY')
+    TWITTER_ACCESS_TOKEN_SECRET = os.environ.get('TWITTER_ACCESS_TOKEN_SECRET')
 
-    MS_VISION_KEY = os.environ.get('MS_VISION_KEY', 'ms-vision-key-here')
+    MS_VISION_KEY = os.environ.get('MS_VISION_KEY')
 
 class ProductionConfig(Config):
     DEBUG = False
