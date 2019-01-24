@@ -17,6 +17,8 @@ class Config(object):
     TWITTER_ACCESS_TOKEN_KEY = os.environ.get('TWITTER_ACCESS_TOKEN_KEY', 'access-token-key-here')
     TWITTER_ACCESS_TOKEN_SECRET = os.environ.get('TWITTER_ACCESS_TOKEN_SECRET', 'access-token-secret-here')
 
+    MS_VISION_KEY = os.environ.get('MS_VISION_KEY', 'ms-vision-key-here')
+
 class ProductionConfig(Config):
     DEBUG = False
 
