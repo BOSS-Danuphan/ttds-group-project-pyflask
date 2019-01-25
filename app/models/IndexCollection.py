@@ -23,8 +23,6 @@ class IndexCollection():
         # Index tweet text
         for key in self.preprocesser.preprocess(tweet.Text):
             if key not in self.index:
-                # TEST
-                print('Adding: ', key)
                 self.index[key] = [tweetID]
             else:
                 self.index[key].append(tweetID)
