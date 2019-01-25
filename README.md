@@ -47,6 +47,7 @@ Available configurations:
 * `TWITTER_CONSUMER_SECRET`: Twitter consumer secret
 * `TWITTER_ACCESS_TOKEN_KEY`: Twitter access key
 * `TWITTER_ACCESS_TOKEN_SECRET`: Twitter access secret
+* `MS_VISION_KEY`: Microsoft Vision API key
 
 #### Start project
 ```
