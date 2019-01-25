@@ -2,7 +2,6 @@ from flask import Flask, render_template, jsonify, request
 from app import app
 from datetime import datetime
 from app.storage import app_index_collection, app_search
-from app.storage import inc
 
 ########################################
 #         Background Streaming         #
@@ -55,7 +54,7 @@ def apisearch():
     limit = request.args.get('limit')
     result = app_search.match(q)
     return jsonify({
-        **result,
+        'results': result,
         'ts': datetime.now().strftime(app.config['DATETIME_FORMAT']),
         'message': f'q is {q} and limit is {limit}'
     })

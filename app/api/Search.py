@@ -14,7 +14,7 @@ class SearchEngine:
 
     def __init__(self, index):
         """ Set inverted index. """        
-        self._index = index
+        self._index = index.index
         return
 
     def match(self, query):

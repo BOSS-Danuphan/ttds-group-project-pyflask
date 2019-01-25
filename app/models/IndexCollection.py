@@ -17,11 +17,11 @@ class IndexCollection():
         self._count = 0
         raise NotImplementedError
 
-    def add_tweet(self, atweet):
+    def add_tweet(self, tweet):
         self._count += 1
-        tweetID = atweet.Id
+        tweetID = tweet.Id
         # Index tweet text
-        for key in self.preprocesser.preprocess(atweet.text):
+        for key in self.preprocesser.preprocess(tweet.Text):
             if key not in self.index:
                 # TEST
                 print('Adding: ', key)
