@@ -13,21 +13,24 @@ class SearchEngine:
     _re_bool = re.compile("(.*?)\\b(AND NOT|AND|OR)\\b(.*)")
 
     def __init__(self, index):
-        """ Set inverted index. """        
+        """ Set inverted index. """
         self._index = index.index
         return
 
     def match(self, query):
-        
+
         """Execute a boolean search and returns a list of matched document IDs."""
         docs = []
+
+        if query is None:
+            return docs
 
         query_type, parts = self.parse_query(query)
         if query_type == QueryType.BOOL:
             # If bool, recursively get results for left & right part
             left_set = self.match(parts[0])
             right_set = self.match(parts[2])
-            
+
             # Perform boolean match
             op = parts[1]
             if op == "AND":
@@ -44,7 +47,6 @@ class SearchEngine:
                 if token in self._index:
                     doc_lists.append(self._index[token])
             docs = self.get_intersection(doc_lists)
-            
 
         docs.sort()
         return docs
@@ -53,9 +55,9 @@ class SearchEngine:
         """Identifies a query's type and its constituent parts."""
         match = self._re_bool.match(query)
         if not match is None:
-            return QueryType.BOOL, match.group(1, 2, 3)        
+            return QueryType.BOOL, match.group(1, 2, 3)
         return QueryType.TERM, query
-    
+
     def get_union(self, lists):
         if lists is None or len(lists) == 0:
             return []
@@ -86,4 +88,3 @@ class SearchEngine:
         difference = list(set(lists[0]).difference(lists[1]))
         difference.sort()
         return difference
-        
