@@ -19,6 +19,7 @@ class IndexCollection():
 
     def add_tweet(self, tweet):
         self._count += 1
+        
         tweetID = tweet.Id
         # Index tweet text
         for key in self.preprocesser.preprocess(tweet.Text):
@@ -27,37 +28,30 @@ class IndexCollection():
             else:
                 self.index[key].append(tweetID)
 
-        # TODO: Code appears to need refactored to work with the new models
-
-        # TODO: index vision results etc.
-        # tags
-        # for tag in vision.tags:
-        #     tag.confidence, tag.name
-        # captions
-        # for caption in vision.description.captions:
-        #     caption.confidence, caption.text
-
-        # """tags: cut above the confidence 50
-        #     key of list of dictionaries with 'confidence' and 'name'"""
-
+        if tweet.VisionResults is None:
+            return
+        
+        """tags: cut above the confidence 50
+            key of list of dictionaries with 'confidence' and 'name'"""
         #tags from image!
-        # tweetID = tweetandvision['Tweet']['ID']
-        # for item in tweetandvision['VisionResults']['tags']:
-        #     if item['confidence']>0.5:
-        #         key= item['name']
-        #         #costly to process the entier thing?
-        #         if key not in self.index:
-        #             self.index[key] = [tweetID]
-        #         else: #given each tweetID will be unique
-        #             self.index[key].append(tweetID)
+        for item in tweet.VisionResults.tags:
+            if item.confidence > 0.5:
+                key = item.name
+                #costly to process the enter thing?
+                if key not in self.index:
+                    self.index[key] = [tweetID]
+                else: #given each tweetID will be unique
+                    self.index[key].append(tweetID)
 
-        # #caption from image!
-        # caption = tweetandvision['VisionResults']['description']['captions'][0]['text']
-        # for key in self.preprocesser.preprocess(caption):
-        #     if key not in self.index:
-        #         self.index[key] = [tweetID]
-        #     else:
-        #         self.index[key].append(tweetID)
+        #caption from image!
+        for caption in tweet.VisionResults.description.captions:
+            if caption.confidence > 0.5:
+                tokens = self.preprocesser.preprocess(caption.text)
+                for key in tokens:
+                    if key not in self.index:
+                        self.index[key] = [tweetID]
+                    else:
+                        self.index[key].append(tweetID)
 
     def export(self, target):
         '''Export in-memory index to a given file'''

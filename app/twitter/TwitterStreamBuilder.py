@@ -12,6 +12,6 @@ class TwitterStreamBuilder():
     @staticmethod
     def StreamBuilder():
         api = TwitterStreamBuilder.BuildApiClient()
-        streamListener = TwitterStreamListener(api)
+        streamListener = TwitterStreamListener(api, useVision=False)
         myStream = tweepy.Stream(auth = api.auth, listener=streamListener)
         return myStream

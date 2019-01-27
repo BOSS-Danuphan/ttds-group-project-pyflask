@@ -31,7 +31,6 @@ class TwitterStreamListener(tweepy.StreamListener):
         if self._useVision:
             vision_json = analyse_image(atweet.ImageUrl)
             vision = json.loads(vision_json, object_hook=lambda obj: namedtuple('result', obj.keys())(*obj.values()))
-
             atweet.VisionResults = vision
 
         # Add tweet to index
