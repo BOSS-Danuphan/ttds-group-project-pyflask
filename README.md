@@ -47,6 +47,9 @@ Available configurations:
 * `TWITTER_CONSUMER_SECRET`: Twitter consumer secret
 * `TWITTER_ACCESS_TOKEN_KEY`: Twitter access key
 * `TWITTER_ACCESS_TOKEN_SECRET`: Twitter access secret
+* `KEEP_ALIVE` (for scheduler job): '1' run ping job, otherwise '0' (default)
+* `PING_EVERY_X_MINUTES` (for scheduler job): run ping job itself every X minutes (according to `KEEP_ALIVE`)
+* `DOMAIN_URL` (for scheduler job): Domain url
 
 #### Start project
 ```
