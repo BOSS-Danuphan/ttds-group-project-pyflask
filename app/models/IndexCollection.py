@@ -7,6 +7,7 @@ class IndexCollection():
     '''This class aims to keep search index in memory'''
     _loaded=None
     _tweet_count=0
+    _initial_tweet_count=0
     _export_frequency = 100
     
     def __init__(self, fileService=None):
@@ -22,8 +23,9 @@ class IndexCollection():
 
         serialized_index = self.fileService.read()
         if serialized_index and len(serialized_index) > 2:
-            index_dict = json.loads(serialized_index)
-            self.index = defaultdict(list, index_dict)
+            json_dict = json.loads(serialized_index)
+            self._tweet_count = self._initial_tweet_count = int(json_dict["tweet_count"])
+            self.index = defaultdict(list, json_dict["index"])
         
         self._loaded = True
         
@@ -58,8 +60,10 @@ class IndexCollection():
         
         
     def export(self):
-        if self.fileService is None:
+        if self.fileService is None or self._tweet_count <= self._initial_tweet_count:
             return
-            
+        obj = {}
+        obj['tweet_count'] = self._tweet_count
+        obj['index'] = self.index
         if(self._tweet_count > 0):
-            self.fileService.write(json.dumps(self.index))
+            self.fileService.write(json.dumps(obj))

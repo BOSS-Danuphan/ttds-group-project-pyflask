@@ -1,4 +1,4 @@
-import re
+import re, math
 from enum import Enum
 from app.api.processor import PreProcessor
 
@@ -7,24 +7,57 @@ class QueryType(Enum):
     TERM = 2
 
 class SearchEngine:
+    _index_collection = None
     _index = {}
     _preprocessor = PreProcessor()
+    _max_results = 20
 
     _re_bool = re.compile("(.*?)\\b(AND NOT|AND|OR)\\b(.*)")
 
     def __init__(self, index):
         """ Set inverted index. """
-        self._index = index.index
+        self._index_collection = index
+        self._index = self._index_collection.index
         return
 
     def match(self, query):
+        if not query:
+            return []
 
-        """Execute a boolean search and returns a list of matched document IDs."""
-        docs = []
+        query_type, parts = self.parse_query(query)
+        if query_type == QueryType.BOOL:
+            return self.match_strict(query)
+        else:
+            return self.match_ranked(query)
 
-        if query is None:
-            return docs
+    def match_ranked(self, query):
+        """ Execute a search and returns a list of tweets ranked by TFIDF score"""
+        tokens = set(self._preprocessor.preprocess(query))
+        
+        tweet_lists = [self._index[token] for token in tokens]
+        tweet_superset = self.get_union(tweet_lists)
+        results = []
+        for tweet in tweet_superset:
+            qd = 0.0
+            for token in tokens:
+                if not tweet in self._index[token]:
+                    continue
 
+                df = len(self._index[token])
+                tf = 1
+                idf = math.log10(self._index_collection._tweet_count / df)
+                wtd = (1 + math.log10(tf)) * idf
+                qd += wtd
+
+            results.append([tweet, qd])
+        results.sort(key=lambda x: x[1], reverse=True)
+        
+        # Return list of tweet IDs, not score
+        return [result[0] for result in results[:self._max_results]]
+
+    def match_strict(self, query):
+        """Execute a boolean search and returns a list of matched tweet IDs."""
+        tweets = []
         query_type, parts = self.parse_query(query)
         if query_type == QueryType.BOOL:
             # If bool, recursively get results for left & right part
@@ -34,22 +67,22 @@ class SearchEngine:
             # Perform boolean match
             op = parts[1]
             if op == "AND":
-                docs = self.get_intersection([left_set, right_set])
+                tweets = self.get_intersection([left_set, right_set])
             elif op == "OR":
-                docs = self.get_union([left_set, right_set])
+                tweets = self.get_union([left_set, right_set])
             elif op == "AND NOT":
-                docs = self.get_difference([left_set, right_set])
+                tweets = self.get_difference([left_set, right_set])
         else:
-            """Matches documents that contain all terms of a query."""
+            """Matches tweets that contain all terms of a query."""
             tokens = self._preprocessor.preprocess(query)
-            doc_lists = []
+            tweet_lists = []
             for token in tokens:
                 if token in self._index:
-                    doc_lists.append(self._index[token])
-            docs = self.get_intersection(doc_lists)
+                    tweet_lists.append(self._index[token])
+            tweets = self.get_intersection(tweet_lists)
 
-        docs.sort()
-        return docs
+        tweets.sort()
+        return tweets
 
     def parse_query(self, query):
         """Identifies a query's type and its constituent parts."""

@@ -8,3 +8,6 @@ venv/
 
 # VisualStudioCode
 .vscode/*
+
+# Index file
+index.txt
