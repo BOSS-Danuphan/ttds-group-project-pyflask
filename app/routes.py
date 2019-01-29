@@ -1,8 +1,7 @@
 from flask import Flask, render_template, jsonify, request
 from app import app
 from datetime import datetime
-from app.api.Search import SearchModule
-from app.storage import app_index_collection
+from app.storage import app_index_collection, app_search
 
 ########################################
 #         Background Streaming         #
@@ -53,16 +52,16 @@ def ping():
 def apisearch():
     q = request.args.get('q')
     limit = request.args.get('limit')
-    result = SearchModule.search(q, limit)
+    result = app_search.match(q)
     return jsonify({
-        **result,
+        'results': result,
         'ts': datetime.now().strftime(app.config['DATETIME_FORMAT']),
         'message': f'q is {q} and limit is {limit}'
     })
 
 @app.route('/api/streamstatus')
 def apistreamstatus():
-    count = app_index_collection._count
+    count = app_index_collection._tweet_count
     global thread
     return jsonify({
         'nThread': active_count(),

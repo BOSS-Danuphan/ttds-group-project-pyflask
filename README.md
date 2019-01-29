@@ -43,13 +43,17 @@ Available configurations:
 * `APP_SETTINGS`: can be `config.ProductionConfig` (default, for production), `config.StagingConfig`, `config.DevelopmentConfig` (for local development), `config.TestingConfig`
 * `DATETIME_FORMAT`: Display datetime format (default: "%Y-%m-%d %H:%M:%S")
 * `INDEXFILE_PATH`: Path to index file (default: "myindex.txt")
+* `INDEX_WRITER`: Options are FileWriter, AzureBlobWriter, or blank (None). Default is None.
 * `TWITTER_CONSUMER_KEY`: Twitter consumer key
 * `TWITTER_CONSUMER_SECRET`: Twitter consumer secret
 * `TWITTER_ACCESS_TOKEN_KEY`: Twitter access key
 * `TWITTER_ACCESS_TOKEN_SECRET`: Twitter access secret
+* `MS_VISION_KEY`: Microsoft Vision API key
 * `KEEP_ALIVE` (for scheduler job): '1' run ping job, otherwise '0' (default)
 * `PING_EVERY_X_MINUTES` (for scheduler job): run ping job itself every X minutes (according to `KEEP_ALIVE`)
 * `DOMAIN_URL` (for scheduler job): Domain url
+* `AZURE_BLOB_ACCOUNT` = 'Azure blob storage account name'
+* `AZURE_BLOB_KEY` = 'Azure blob strage account key'
 
 #### Start project
 ```

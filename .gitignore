@@ -1,5 +1,13 @@
+# Python
+*.pyc
+__pycache__/
+
+# Environments
 venv/
 .env
 
-*.pyc
-__pycache__/
+# VisualStudioCode
+.vscode/*
+
+# Index file
+index.txt
