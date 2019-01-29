@@ -61,7 +61,7 @@ def apisearch():
 
 @app.route('/api/streamstatus')
 def apistreamstatus():
-    count = app_index_collection._count
+    count = app_index_collection._tweet_count
     global thread
     return jsonify({
         'nThread': active_count(),
