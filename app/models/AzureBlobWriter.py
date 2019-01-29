@@ -3,6 +3,7 @@ from app import app
 import sys
 from datetime import datetime
 from azure.storage.blob import BlockBlobService, PublicAccess
+from app.utils import sizeof_fmt
 
 class AzureBlobWriter:
 
@@ -21,7 +22,6 @@ class AzureBlobWriter:
             blob_name = self._file_path
 
             container = self._blob_service.list_blobs(self._container_name)
-            print([c.name for c in container])
             for blob in container:
                 blob_order = int(blob.name.split("-")[1])
                 if blob_order > highest_blob:
@@ -37,10 +37,9 @@ class AzureBlobWriter:
         return content
 
     def write(self, content):
-        print('test')
         try:
             self._blob_service.create_blob_from_text(self._container_name, self._file_path, content)
         except:
             print("Unexpected error at {}.write: {}".format(__name__, sys.exc_info()))
         else:
-            print("Content has been written to {} by {} at {}".format(self._file_path, __name__, datetime.now().strftime(app.config['DATETIME_FORMAT'])))
+            print("Content of size {} has been written to {} by {} at {}".format(sizeof_fmt(content), self._file_path, __name__, datetime.now().strftime(app.config['DATETIME_FORMAT'])))

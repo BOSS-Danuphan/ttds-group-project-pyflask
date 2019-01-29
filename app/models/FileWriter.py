@@ -2,6 +2,7 @@ import os
 import sys
 from datetime import datetime
 from app import app
+from app.utils import sizeof_fmt
 
 class FileWriter:
     _file_path = ""
@@ -27,4 +28,4 @@ class FileWriter:
         except:
             print("Unexpected error at {}.write: {}".format(__name__, sys.exc_info()))
         else:
-            print("Content has been written to {} by {} at {}".format(self._file_path, __name__, datetime.now().strftime(app.config['DATETIME_FORMAT'])))
+            print("Content of size {} has been written to {} by {} at {}".format(sizeof_fmt(content), self._file_path, __name__, datetime.now().strftime(app.config['DATETIME_FORMAT'])))
