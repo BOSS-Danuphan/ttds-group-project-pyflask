@@ -9,7 +9,7 @@ class IndexCollection():
     _tweet_count=0
     _initial_tweet_count=0
     _export_frequency = 100
-    
+
     def __init__(self, fileService=None):
         self.index = defaultdict(list)
         self.preprocesser = PreProcessor()
@@ -26,14 +26,14 @@ class IndexCollection():
             json_dict = json.loads(serialized_index)
             self._tweet_count = self._initial_tweet_count = int(json_dict["tweet_count"])
             self.index = defaultdict(list, json_dict["index"])
-        
+
         self._loaded = True
-        
+
     def add_tweet(self, tweet):
         self._tweet_count += 1
         if (self._tweet_count % self._export_frequency == 0):
             self.export()
-        
+
         tweetID = tweet.Id
         # Index tweet text
         for key in self.preprocesser.preprocess(tweet.Text):
@@ -41,7 +41,7 @@ class IndexCollection():
 
         if tweet.VisionResults is None:
             return
-        
+
         """tags: cut above the confidence 50
             key of list of dictionaries with 'confidence' and 'name'"""
         #tags from image!
@@ -57,13 +57,13 @@ class IndexCollection():
                 tokens = self.preprocesser.preprocess(caption.text)
                 for key in tokens:
                     self.index[key].append(tweetID)
-        
-        
+
     def export(self):
         if self.fileService is None or self._tweet_count <= self._initial_tweet_count:
             return
         obj = {}
         obj['tweet_count'] = self._tweet_count
         obj['index'] = self.index
+        self._initial_tweet_count = obj['tweet_count']
         if(self._tweet_count > 0):
             self.fileService.write(json.dumps(obj))
