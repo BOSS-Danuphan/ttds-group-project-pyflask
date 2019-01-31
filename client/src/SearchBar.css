@@ -1,0 +1,71 @@
+.SearchBar{
+    /*height: calc(100vh - 50px);*/
+    width: 100%;
+    margin-top: 20px;
+}
+
+.SearchBar form{
+    display: flex;
+    justify-content: space-between;
+    padding: 10px 20px;
+    border-radius: 10px;
+    background: #eef3f7;
+    flex-wrap: wrap;
+}
+
+.SearchBar form input{
+    font-size: 18px;
+    color: #2C71A1;
+}
+
+.SearchBar-left{
+    display: flex;
+    padding: 5px 0;
+}
+
+.SearchBar-right{
+    display: flex;
+    padding: 5px 0;
+}
+
+.SearchBar-input-container{
+    display:flex;
+}
+
+.SearchBar-input{
+    background-image: url(magnifying-glass.svg);
+    background-position: 97% 50%;
+    background-repeat: no-repeat;
+    border: 1px solid #2C71A1;
+    padding: 8px;
+    padding-right: 28px;
+    background-size: 20px 20px;
+    border-radius: 10px;
+    min-width: 40vw;
+}
+
+.SearchBar-input:focus, .SearchBar-submit:focus, .SearchBar-stop:focus, .SearchBar-number:focus, .SearchBar-timeout:focus{
+    outline: none;
+    border: 1px solid blue;
+    box-shadow: 0px 0px 25px -3px #2C71A1;
+}
+
+.SearchBar-right .SearchBar-number{
+    margin:0;
+}
+
+.SearchBar-number, .SearchBar-timeout{
+    max-width: 75px;
+    padding: 0px 0px 0px 5px;
+
+}
+
+.SearchBar-submit, .SearchBar-stop, .SearchBar-number, .SearchBar-timeout{
+    border-radius: 10px;
+    background: none;
+    border: 1px solid #2C71A1;
+    margin-left: 10px;
+    padding: 8px;
+}
+
+

@@ -1,0 +1,46 @@
+.HomePage{
+    height: calc(100vh - 115px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.HomePage form{
+    display: flex;
+}
+
+.HomePage form input{
+    font-size: 18px;
+    color: #2C71A1;
+}
+
+.HomePage-input{
+    background-image: url(magnifying-glass.svg);
+    background-position: 97% 50%;
+    background-repeat: no-repeat;
+    border: 1px solid #2C71A1;
+    padding: 8px;
+    padding-right: 28px;
+    background-size: 20px 20px;
+    border-radius: 10px;
+    min-width: 40vw;
+}
+
+.HomePage-input:focus{
+    outline: none;
+    border: 1px solid blue;
+    box-shadow: 0px 0px 25px -3px #2C71A1;
+}
+
+.HomePage-submit{
+    border-radius: 10px;
+    background: none;
+    border: 1px solid #2C71A1;
+    margin-left: 10px;
+}
+
+.HomePage-submit:focus{
+    outline: none;
+    border: 1px solid blue;
+    box-shadow: 0px 0px 25px -3px #2C71A1;
+}
