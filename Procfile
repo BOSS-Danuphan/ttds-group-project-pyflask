@@ -1,2 +1,2 @@
-web: gunicorn --workers=1 app:app
+web: npm rum prod
 clock: python scheduler.py
