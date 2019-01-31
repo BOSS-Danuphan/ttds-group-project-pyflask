@@ -50,11 +50,22 @@ def ping():
 
 @app.route('/api/search')
 def apisearch():
+    """
+    params:
+        q: Search query
+        limit: the number of results
+    """
     q = request.args.get('q')
     limit = request.args.get('limit')
-    result = app_search.match(q)
+    if limit is not None and limit.isdigit():
+        # if limit >= 0
+        limit = int(limit)
+    else:
+        limit = None
+    results = app_search.match(q, limit)
+
     return jsonify({
-        'results': result,
+        'data': results,
         'ts': datetime.now().strftime(app.config['DATETIME_FORMAT']),
         'message': f'q is {q} and limit is {limit}'
     })
