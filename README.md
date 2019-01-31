@@ -39,6 +39,11 @@ C:\ttds-group-project-pyflask>
 (venv) $ deactivate
 $
 ```
+### Heroku
+##### buildpacks (nodejs must be the first buildpack)
+1. heroku/nodejs
+2. heroku/python
+
 ## Development
 ##### Add local Environment variables (For backend service)
 ```
