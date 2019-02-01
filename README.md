@@ -40,7 +40,7 @@ $ cp .env-example .env
 ```
 Available configurations:
 * `SECRET_KEY`: Application secret key
-* `APP_SETTINGS`: can be `config.ProductionConfig` (default, for production), `config.StagingConfig`, `config.DevelopmentConfig` (for local development), `config.TestingConfig`
+* `APP_SETTINGS`: can be `app.config.ProductionConfig` (default, for production), `app.config.StagingConfig`, `app.config.DevelopmentConfig` (for local development), `app.config.TestingConfig`
 * `DATETIME_FORMAT`: Display datetime format (default: "%Y-%m-%d %H:%M:%S")
 * `INDEXFILE_PATH`: Path to index file (default: "myindex.txt")
 * `INDEX_WRITER`: Options are FileWriter, AzureBlobWriter, or blank (None). Default is None.
