@@ -76,14 +76,12 @@ class TwitterStreamListener(tweepy.StreamListener):
         # Photos only
         for m in media:
             if m["type"] != "photo":
-                print("Non-photo entity")
                 return
         if hasattr(status, "extended_entities"):
             ee = status.extended_entities
             if "media" in ee.keys():
                 for m in ee["media"]:
                     if (m["type"] != "photo"):
-                        print("Non-photo extended entity")
                         return
 
         media = media[0]
