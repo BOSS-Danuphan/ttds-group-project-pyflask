@@ -14,10 +14,10 @@ class TwitterStreamListener(tweepy.StreamListener):
         self._useVision = useVision
         super().__init__(api=api)
 
-    def on_status(self, status):      
+    def on_status(self, status):
         media = self.get_media(status)
         if media is None:
-            return
+            return        
 
         self._tweetCount += 1
 
@@ -73,9 +73,22 @@ class TwitterStreamListener(tweepy.StreamListener):
         if len(media) < 1:
             return
 
+        # Photos only
+        for m in media:
+            if m["type"] != "photo":
+                print("Non-photo entity")
+                return
+        if hasattr(status, "extended_entities"):
+            ee = status.extended_entities
+            if "media" in ee.keys():
+                for m in ee["media"]:
+                    if (m["type"] != "photo"):
+                        print("Non-photo extended entity")
+                        return
+
         media = media[0]
 
         if not "media_url_https" in media.keys() or "url" not in media.keys():
-            return
+            return        
         
         return media

@@ -2,33 +2,55 @@ import re, urllib
 from nltk.stem import PorterStemmer
 
 class PreProcessor:
+    _re_url = re.compile(r'https?:\/\/(www\.)?[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-z]{2,6}\b([-a-zA-Z0-9@:$%_\+.~#?&//=]*)')
+    _re_usernames = re.compile("@\w+") # Twitter usernames
+    _re_s_endings = re.compile("s\'s\\b") # "s's"
+    _re_apostrophes = re.compile("'")
+    _re_non_word_space = re.compile("[^\w\s]") # Non-word and non-white space
+
     def __init__(self):
         self.stemmer = PorterStemmer()
         self.stopwords = self.load_stopwords()
-    
+        self.offensive = self.load_offensivewords()
+
     def stemming(self, terms):
         result = [self.stemmer.stem(term) for term in terms]
         return result
 
     def tokenize(self, content):
         content = content.lower()
-        content = re.compile("s\'s\\b").sub("s",content)
-        content = re.compile("'").sub("",content)
-        content = re.compile("[^\w\s]").sub(" ", content)
+        content = self.remove_urls(content)
+        content = self._re_usernames.sub("", content)
+        content = self._re_s_endings.sub("s",content) 
+        content = self._re_apostrophes.sub("",content)
+        content = self._re_non_word_space.sub(" ", content)
         content = content.split()
         return content
 
     def load_stopwords(self):
         stop = urllib.request.urlopen('http://members.unine.ch/jacques.savoy/clef/englishST.txt') 
         stopwords = stop.read().decode('utf-8') 
-        return self.tokenize(stopwords)
+        stopwords = self.tokenize(stopwords)
+        stopwords.append("rt")
+        return stopwords
+    
+    def load_offensivewords(self):
+        offensive = urllib.request.urlopen('https://www.cs.cmu.edu/~biglou/resources/bad-words.txt') 
+        offensive_words = offensive.read().decode('utf-8') 
+        return self.tokenize(offensive_words)
     
     def remove_stopwords(self, terms):
         result = [term for term in terms if term not in self.stopwords]
         return result
 
+    def remove_urls(self, text):
+        return self._re_url.sub("", text)
+
     def preprocess(self, text):
         terms = self.tokenize(text)
+        # Filter out potentially offensive tweets
+        if any(term in self.offensive for term in terms):
+            return None
         terms = self.remove_stopwords(terms)
         terms = self.stemming(terms)
         return terms
