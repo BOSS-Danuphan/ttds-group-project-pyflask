@@ -22,6 +22,7 @@ class App extends Component {
         super(props);
         this.state = {
             query: this.props.match.params.query || '',
+            input_query: this.props.match.params.query || '',
             results: [],
             staticResults: [],
             rtResults: [],
@@ -29,6 +30,7 @@ class App extends Component {
             endpoint: process.env.REACT_APP_BACKEND_URL || window.location.origin,
             timeout: 10000,
             numberOfResults: 10,
+            pollingOn: true,
             timer: null,
             error: null
         };
@@ -36,6 +38,7 @@ class App extends Component {
         this.onSearchChange = this.onSearchChange.bind(this);
         this.onSearchSubmit = this.onSearchSubmit.bind(this);
         this.onNumberChange = this.onNumberChange.bind(this);
+        this.onTimeoutChange = this.onTimeoutChange.bind(this);
         this.onStop = this.onStop.bind(this);
     }
 
@@ -52,7 +55,7 @@ class App extends Component {
                         results: ids,
                         staticResults: ids,
                         rtResults: [...rtTweets, ...this.state.rtResults].slice(0, this.state.numberOfResults)
-                    }
+                    };
                     this.setState(newState)
                 }
             })
@@ -63,20 +66,21 @@ class App extends Component {
     }
 
     onSearchChange(event) {
-        this.setState({query: event.target.value});
+        this.setState({input_query: event.target.value});
     }
 
     onSearchSubmit(event) {
         clearInterval(this.state.timer);
-        const query = this.state.query;
+        const query = this.state.input_query;
         this.sendGetSearch(query, true);
         this.setState({
             results: [],
             rtResults: [],
             staticResults: [],
-            timer: setInterval(() => this.sendGetSearch(query), this.state.timeout)
+            query: query,
+            timer: setInterval(() => this.sendGetSearch(query), this.state.timeout),
+            pollingOn: true
         });
-
         event.preventDefault();
     }
 
@@ -85,12 +89,34 @@ class App extends Component {
     }
 
     onTimeoutChange(event){
-        this.setState({timeout: event.target.value});
+        const timeout = event.target.value*1000,
+            query = this.state.input_query;
+        if(this.state.pollingOn){
+            clearInterval(this.state.timer);
+            this.sendGetSearch(query/*, true*/);
+            this.setState({
+                timeout: timeout,
+                timer: setInterval(() => this.sendGetSearch(query), timeout)
+            });
+        } else {
+            this.setState({timeout: timeout});
+        }
+
     }
 
     onStop(event) {
-        clearInterval(this.state.timer);
-        this.setState({timer: null});
+        console.log('onStop', event);
+        if(event){
+            const query = this.state.query;
+            this.sendGetSearch(query);
+            this.setState({
+                timer: setInterval(() => this.sendGetSearch(query), this.state.timeout),
+                pollingOn: event
+            });
+        } else {
+            clearInterval(this.state.timer);
+            this.setState({timer: null, pollingOn: event});
+        }
     }
 
     isError() {
@@ -123,9 +149,10 @@ class App extends Component {
         return (
             <div className="SearchPage">
                 <SearchBar
-                    query={this.state.query}
+                    query={this.state.input_query}
                     numberOfResults={this.state.numberOfResults}
                     timeout={this.state.timeout}
+                    pollingOn={this.state.pollingOn}
                     onSearchChange={this.onSearchChange}
                     onSearchSubmit={this.onSearchSubmit}
                     onNumberChange={this.onNumberChange}

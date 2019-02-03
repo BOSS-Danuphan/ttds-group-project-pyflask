@@ -32,7 +32,7 @@ class App extends Component {
                         </ul>
                     </nav>
                     <Route path="/" exact component={HomePage}/>
-                    <Route path="/search/:query" component={SearchPage}/>
+                    <Route path="/search/:query?" component={SearchPage}/>
                     <Route path="/about/" component={AboutPage}/>
                     <Route path="/help/" component={HelpPage}/>
                     <Route path="/contact/" component={ContactPage}/>

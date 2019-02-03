@@ -7,10 +7,10 @@ class ResultsWall extends Component {
     // <TwitterTweetEmbed tweetId='653229520015749121' options={{'height': '400', 'width':400}}/>
     render() {
         const tweetOption = {'conversation': 'none'}
-        const tweetList = this.props.stTweets.map((tweet, index) =>
+        const tweetList = /*this.props.stTweets*/['653229520015749121'].map((tweet, index) =>
             <li key={tweet}><TwitterTweetEmbed tweetId={tweet} options={tweetOption}/></li>
         );
-        const rtTweetList= this.props.rtTweets.map((tweet, index) =>
+        const rtTweetList= /*this.props.rtTweets*/['653229520015749121'].map((tweet, index) =>
             <li key={tweet}><TwitterTweetEmbed tweetId={tweet} options={tweetOption}/></li>
         );
         return (

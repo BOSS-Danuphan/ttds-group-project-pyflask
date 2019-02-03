@@ -27,7 +27,7 @@ class HomePage extends Component {
         return (
             <div className="HomePage">
                 <form onSubmit={this.handleSubmit}>
-                    <input type="text" value={this.props.query} onChange={this.handleChange} className="HomePage-input" autoFocus />
+                    <input type="text" value={this.props.query} onChange={this.handleChange} placeholder="Type a query" className="HomePage-input" autoFocus />
                     <input type="submit" value="Search" className="HomePage-submit"/>
                 </form>
             </div>

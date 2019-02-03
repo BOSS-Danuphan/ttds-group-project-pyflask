@@ -11,10 +11,11 @@
     border-radius: 10px;
     background: #eef3f7;
     flex-wrap: wrap;
+    font-size: 14px;
 }
 
 .SearchBar form input{
-    font-size: 18px;
+    /*font-size: 18px;*/
     color: #2C71A1;
 }
 
@@ -44,20 +45,37 @@
     min-width: 40vw;
 }
 
+.SearchBar-input-pair{
+    display: flex;
+    align-items: center;
+}
+
+.SearchBar-input-pair p{
+    margin: 2px 0px;
+}
+
+.SearchBar-input-pair p.switch{
+    margin: 2px 10px;
+}
+
 .SearchBar-input:focus, .SearchBar-submit:focus, .SearchBar-stop:focus, .SearchBar-number:focus, .SearchBar-timeout:focus{
     outline: none;
     border: 1px solid blue;
     box-shadow: 0px 0px 25px -3px #2C71A1;
 }
 
-.SearchBar-right .SearchBar-number{
-    margin:0;
+/*.SearchBar-right .SearchBar-number{*/
+    /*margin:0;*/
+/*}*/
+
+.SearchBar-right .SearchBar-number, .SearchBar-right .SearchBar-timeout{
+    max-width: 50px;
+    /*padding: 0px 0px 0px 5px;*/
+    background: white;
 }
 
-.SearchBar-number, .SearchBar-timeout{
-    max-width: 75px;
-    padding: 0px 0px 0px 5px;
-
+.SearchBar-submit, .SearchBar-stop{
+    cursor: pointer;
 }
 
 .SearchBar-submit, .SearchBar-stop, .SearchBar-number, .SearchBar-timeout{

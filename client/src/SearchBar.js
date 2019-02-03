@@ -1,4 +1,6 @@
 import React, {Component} from 'react';
+import {DebounceInput} from 'react-debounce-input';
+import Switch from "react-switch";
 import './SearchBar.css';
 
 class SearchBar extends Component {
@@ -37,13 +39,42 @@ class SearchBar extends Component {
             <div className="SearchBar">
                 <form onSubmit={this.handleSubmit}>
                     <div className="SearchBar-left">
-                        <input type="text" value={this.props.query} onChange={this.handleChange} autoFocus className="SearchBar-input"/>
+                        <input type="text" value={this.props.query} onChange={this.handleChange} placeholder="Type a query" autoFocus className="SearchBar-input"/>
                         <input type="submit" value="Submit" className="SearchBar-submit"/>
                     </div>
                     <div className="SearchBar-right">
-                        <input type="number" value={this.props.numberOfResults} onChange={this.handleNumberChange} className="SearchBar-number"/>
-                        <input type="number" value={this.props.timeout} onChange={this.handleTimeoutChange} className="SearchBar-timeout"/>
-                        <input type="button" value="Stop" onClick={this.handleStop} className="SearchBar-stop"/>
+                        <div className="SearchBar-input-pair">
+                            <p>Number of results:</p>
+                            <DebounceInput
+                                debounceTimeout={300}
+                                type="number"
+                                value={this.props.numberOfResults}
+                                onChange={this.handleNumberChange}
+                                className="SearchBar-number"
+                                min="1" max="100"
+                                />
+                        </div>
+                        <div className="SearchBar-input-pair">
+                            <p>Refresh interval:</p>
+                            <DebounceInput
+                                debounceTimeout={500}
+                                type="number"
+                                value={this.props.timeout/1000}
+                                onChange={this.handleTimeoutChange}
+                                className="SearchBar-timeout"
+                                min="1" max="3600"
+                            />
+                        </div>
+                        <div className="SearchBar-input-pair">
+                            <p className="switch">Real-time polling:</p>
+                            <Switch
+                                onChange={this.handleStop}
+                                checked={this.props.pollingOn}
+                                id="normal-switch"
+                                height={34}
+                                width={70}
+                            />
+                        </div>
                     </div>
                 </form>
             </div>
