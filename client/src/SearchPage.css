@@ -6,3 +6,10 @@
     justify-content: center;
     padding: 0 8vw;
 }
+
+@media (max-width: 599px) {
+    .SearchPage{
+        height: unset;
+        padding: 0 4vw;
+    }
+}

@@ -97,3 +97,14 @@ footer {
   padding-top: 5px;
   padding-right: 20px;
 }
+
+@media (max-width: 599px) {
+  .App-wrapper{
+    height:unset;
+  }
+
+  nav > header > img {
+    height: 30px;
+  }
+
+}

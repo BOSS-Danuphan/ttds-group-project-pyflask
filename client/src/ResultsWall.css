@@ -33,4 +33,29 @@
     color: #2C71A1;
     margin: 2px 0;
     border-bottom: 2px solid white;
+    font-size: 14px;
+    padding-bottom: 5px;
+}
+
+@media (max-width: 599px){
+
+    .ResultsWall{
+        flex-flow: column;
+    }
+
+    .ResultsWall .ResultsWall-static{
+        margin-bottom: 20px;
+    }
+
+    .ResultsWall ul {
+        width: unset;
+        max-width: unset;
+        max-height: 400px
+    }
+
+    .ResultsWall .ResultsWall-static ul{
+        width: unset;
+        max-width: unset;
+        max-height: 400px
+    }
 }

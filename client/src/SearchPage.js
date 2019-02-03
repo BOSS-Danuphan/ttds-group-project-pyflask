@@ -23,14 +23,13 @@ class App extends Component {
         this.state = {
             query: this.props.match.params.query || '',
             input_query: this.props.match.params.query || '',
-            results: [],
             staticResults: [],
             rtResults: [],
             firstQuery: true,
             endpoint: process.env.REACT_APP_BACKEND_URL || window.location.origin,
             timeout: 10000,
             numberOfResults: 10,
-            pollingOn: true,
+            pollingOn: false,
             timer: null,
             error: null
         };
@@ -48,11 +47,10 @@ class App extends Component {
         axios.get(url)
             .then(res => {
                 if (res.data.data.length >= 0) {
-                    const ids = res.data.data.map(id => id.toString())
+                    const ids = res.data.data.map(id => id.toString());
                     const rtTweets = this.diffResults(this.state.staticResults, ids);
                     const newState = {
                         error: null,
-                        results: ids,
                         staticResults: ids,
                         rtResults: [...rtTweets, ...this.state.rtResults].slice(0, this.state.numberOfResults)
                     };
@@ -66,15 +64,16 @@ class App extends Component {
     }
 
     onSearchChange(event) {
-        this.setState({input_query: event.target.value});
+        const query = event.target.value;
+        this.setState({input_query: query});
     }
 
     onSearchSubmit(event) {
+        console.log('SUBMIT', event);
         clearInterval(this.state.timer);
         const query = this.state.input_query;
         this.sendGetSearch(query, true);
         this.setState({
-            results: [],
             rtResults: [],
             staticResults: [],
             query: query,
@@ -135,7 +134,7 @@ class App extends Component {
         if (this.isQuerySet(this.state.query)) {
             this.sendGetSearch(this.state.query, true);
             this.setState({
-                results: [],
+                pollingOn: true,
                 timer: setInterval(() => this.sendGetSearch(this.state.query), this.state.timeout)
             });
         }
@@ -162,7 +161,6 @@ class App extends Component {
                 {this.isError()
                     ? <p>Something went wrong.</p>
                     : <ResultsWall
-                        tweets={this.state.results}
                         stTweets={this.state.staticResults}
                         rtTweets={this.state.rtResults}
                     />

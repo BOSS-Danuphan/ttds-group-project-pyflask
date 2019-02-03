@@ -22,11 +22,13 @@
 .SearchBar-left{
     display: flex;
     padding: 5px 0;
+    flex-flow: column;
 }
 
 .SearchBar-right{
     display: flex;
     padding: 5px 0;
+    flex-flow: column;
 }
 
 .SearchBar-input-container{
@@ -50,12 +52,16 @@
     align-items: center;
 }
 
+.SearchBar-input-pair.down{
+    margin-top: 10px;
+}
+
 .SearchBar-input-pair p{
     margin: 2px 0px;
 }
 
 .SearchBar-input-pair p.switch{
-    margin: 2px 10px;
+    margin: 2px 10px 2px 0px;
 }
 
 .SearchBar-input:focus, .SearchBar-submit:focus, .SearchBar-stop:focus, .SearchBar-number:focus, .SearchBar-timeout:focus{
@@ -68,7 +74,7 @@
     /*margin:0;*/
 /*}*/
 
-.SearchBar-right .SearchBar-number, .SearchBar-right .SearchBar-timeout{
+.SearchBar-left .SearchBar-number, .SearchBar-right .SearchBar-timeout{
     max-width: 50px;
     /*padding: 0px 0px 0px 5px;*/
     background: white;
@@ -80,7 +86,7 @@
 
 .SearchBar-submit, .SearchBar-stop, .SearchBar-number, .SearchBar-timeout{
     border-radius: 10px;
-    background: none;
+    background: white;
     border: 1px solid #2C71A1;
     margin-left: 10px;
     padding: 8px;

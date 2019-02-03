@@ -39,11 +39,11 @@ class SearchBar extends Component {
             <div className="SearchBar">
                 <form onSubmit={this.handleSubmit}>
                     <div className="SearchBar-left">
-                        <input type="text" value={this.props.query} onChange={this.handleChange} placeholder="Type a query" autoFocus className="SearchBar-input"/>
-                        <input type="submit" value="Submit" className="SearchBar-submit"/>
-                    </div>
-                    <div className="SearchBar-right">
                         <div className="SearchBar-input-pair">
+                            <input required type="text" value={this.props.query} onChange={this.handleChange} placeholder="Type a query" autoFocus className="SearchBar-input"/>
+                            <input type="submit" value="Submit" className="SearchBar-submit"/>
+                        </div>
+                        <div className="SearchBar-input-pair down">
                             <p>Number of results:</p>
                             <DebounceInput
                                 debounceTimeout={300}
@@ -52,10 +52,12 @@ class SearchBar extends Component {
                                 onChange={this.handleNumberChange}
                                 className="SearchBar-number"
                                 min="1" max="100"
-                                />
+                            />
                         </div>
+                    </div>
+                    <div className="SearchBar-right">
                         <div className="SearchBar-input-pair">
-                            <p>Refresh interval:</p>
+                            <p>Refresh interval [s]:</p>
                             <DebounceInput
                                 debounceTimeout={500}
                                 type="number"
@@ -65,7 +67,7 @@ class SearchBar extends Component {
                                 min="1" max="3600"
                             />
                         </div>
-                        <div className="SearchBar-input-pair">
+                        <div className="SearchBar-input-pair down">
                             <p className="switch">Real-time polling:</p>
                             <Switch
                                 onChange={this.handleStop}

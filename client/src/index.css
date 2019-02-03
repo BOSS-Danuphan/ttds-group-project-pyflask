@@ -9,6 +9,12 @@ body {
   height: 100vh;
 }
 
+@media (max-width: 599px) {
+  body{
+    height: unset;
+  }
+}
+
 code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New",
     monospace;
