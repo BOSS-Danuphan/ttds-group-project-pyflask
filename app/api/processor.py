@@ -35,7 +35,7 @@ class PreProcessor:
         return stopwords
     
     def load_offensivewords(self):
-        offensive = urllib.request.urlopen('https://www.cs.cmu.edu/~biglou/resources/bad-words.txt') 
+        offensive = urllib.request.urlopen('http://www.bannedwordlist.com/lists/swearWords.txt') 
         offensive_words = offensive.read().decode('utf-8') 
         return self.tokenize(offensive_words)
     
