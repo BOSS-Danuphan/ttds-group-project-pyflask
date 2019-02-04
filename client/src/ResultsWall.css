@@ -1,7 +1,7 @@
 .ResultsWall{
     display: flex;
     flex-flow: row;
-    justify-content: space-between;
+    justify-content: space-evenly;
     width: 100%;
     height: 100%;
     padding: 20px 0px;
@@ -35,6 +35,35 @@
     border-bottom: 2px solid white;
     font-size: 14px;
     padding-bottom: 5px;
+    z-index: 9999;
+    box-shadow: 0 8px 6px -6px #0000001f;
+}
+
+.tweets-enter {
+    opacity: 0.01;
+}
+
+.tweets-enter.tweets-enter-active {
+    opacity: 1;
+    transition: opacity 500ms ease-in;
+}
+
+.tweets-leave {
+    opacity: 1;
+}
+
+.tweets-leave.tweets-leave-active {
+    opacity: 0.01;
+    transition: opacity 300ms ease-in;
+}
+
+.tweets-appear {
+    opacity: 0.01;
+}
+
+.tweets-appear.tweets-appear-active {
+    opacity: 1;
+    transition: opacity .5s ease-in;
 }
 
 @media (max-width: 599px){

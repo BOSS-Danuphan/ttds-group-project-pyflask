@@ -28,6 +28,7 @@ class App extends Component {
             firstQuery: true,
             endpoint: process.env.REACT_APP_BACKEND_URL || window.location.origin,
             timeout: 10000,
+            limit: 100,
             numberOfResults: 10,
             pollingOn: false,
             timer: null,
@@ -42,18 +43,23 @@ class App extends Component {
     }
 
     sendGetSearch(query, firstQuery = false) {
-        const url = `${this.state.endpoint}/api/search?q=${query}&limit=${this.state.numberOfResults}`;
+        const url = `${this.state.endpoint}/api/search?q=${query}&limit=${this.state.limit}`;
         this.props.history.push(`/search/${query}`);
         axios.get(url)
             .then(res => {
                 if (res.data.data.length >= 0) {
                     const ids = res.data.data.map(id => id.toString());
-                    const rtTweets = this.diffResults(this.state.staticResults, ids);
-                    const newState = {
-                        error: null,
-                        staticResults: ids,
-                        rtResults: [...rtTweets, ...this.state.rtResults].slice(0, this.state.numberOfResults)
-                    };
+                    let newState = {};
+                    if (firstQuery) {
+                        newState = {
+                            error: null,
+                            staticResults: ids,
+                            firstQuery: false
+                        };
+                    } else {
+                        const rtTweets = this.diffResults(this.state.staticResults, this.state.rtResults, ids);
+                        newState = {error: null,  rtResults: [...rtTweets, ...this.state.rtResults]}
+                    }
                     this.setState(newState)
                 }
             })
@@ -69,7 +75,6 @@ class App extends Component {
     }
 
     onSearchSubmit(event) {
-        console.log('SUBMIT', event);
         clearInterval(this.state.timer);
         const query = this.state.input_query;
         this.sendGetSearch(query, true);
@@ -126,8 +131,8 @@ class App extends Component {
         return query != null && query !== '';
     }
 
-    diffResults(currentResults, newResults) {
-        return newResults.filter(x => !currentResults.includes(x));
+    diffResults(staticResults, currentRtResults, newResults) {
+        return newResults.filter(x => !staticResults.includes(x) && ! currentRtResults.includes(x));
     }
 
     componentWillMount() {
