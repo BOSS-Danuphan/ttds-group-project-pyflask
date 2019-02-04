@@ -7,13 +7,9 @@ class SearchEvaluator():
     def __init__(self, index):
         self.index = index
 
-    def evaluate_query(self, query, ideal_results, verbose=True):
+    def evaluate_query(self, query, ideal_results):
         self.search = SearchEngine(self.index)
         actual_results = self.search.match(query)
-        if verbose:
-            print("Query: ", query)
-            print("ideal: ", ideal_results)
-            print("actual: ", actual_results)
             
         eval_result = EvalResult()
         if len(actual_results) == 0 or len(ideal_results) == 0:
@@ -28,14 +24,6 @@ class SearchEvaluator():
         ideal_tuples = [(tweet, 1) for tweet in ideal_results]
         eval_result.nDCGat10 = self.calculate_normalized_discounted_cumulative_gain(actual_tuples, ideal_tuples, 10)
         eval_result.nDCGat20 = self.calculate_normalized_discounted_cumulative_gain(actual_tuples, ideal_tuples, 20)
-
-        if verbose:
-            print("Precision: ", eval_result.Precision)
-            print("Recall", eval_result.Recall)
-            print("RPrecision", eval_result.Precision)
-            print("Avg Precision", eval_result.AveragePrecision)
-            print("nDCG @ 10", eval_result.nDCGat10)
-            print("nDCG @ 20", eval_result.nDCGat20)
 
         return eval_result
 
