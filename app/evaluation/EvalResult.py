@@ -1,5 +1,5 @@
 class EvalResult:    
-    def __init__(self, precision=None, recall=None, r_precision=None, avg_precision=None, ndcg_at_10=None, ndcg_at_20=None):
+    def __init__(self, precision=0.0, recall=0.0, r_precision=0.0, avg_precision=0.0, ndcg_at_10=0.0, ndcg_at_20=0.0):
         self.Precision = precision
         self.Recall = recall
         self.RPrecision = r_precision
@@ -7,5 +7,3 @@ class EvalResult:
         self.nDCGat10 = ndcg_at_10
         self.nDCGat20 = ndcg_at_20
         return
-
-
