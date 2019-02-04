@@ -1,5 +1,6 @@
 import re, urllib
 from nltk.stem import PorterStemmer
+from app.utils import safeurlopen
 
 class PreProcessor:
     _re_url = re.compile(r'https?:\/\/(www\.)?[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-z]{2,6}\b([-a-zA-Z0-9@:$%_\+.~#?&//=]*)')
@@ -18,27 +19,28 @@ class PreProcessor:
         return result
 
     def tokenize(self, content):
+        if content is None:
+            return []
+
         content = content.lower()
         content = self.remove_urls(content)
         content = self._re_usernames.sub("", content)
-        content = self._re_s_endings.sub("s",content) 
+        content = self._re_s_endings.sub("s",content)
         content = self._re_apostrophes.sub("",content)
         content = self._re_non_word_space.sub(" ", content)
         content = content.split()
         return content
 
     def load_stopwords(self):
-        stop = urllib.request.urlopen('http://members.unine.ch/jacques.savoy/clef/englishST.txt') 
-        stopwords = stop.read().decode('utf-8') 
+        stopwords = safeurlopen('http://members.unine.ch/jacques.savoy/clef/englishST.txt')
         stopwords = self.tokenize(stopwords)
         stopwords.append("rt")
         return stopwords
-    
+
     def load_offensivewords(self):
-        offensive = urllib.request.urlopen('http://www.bannedwordlist.com/lists/swearWords.txt') 
-        offensive_words = offensive.read().decode('utf-8') 
+        offensive_words = safeurlopen('http://www.bannedwordlist.com/lists/swearWords.txt')
         return self.tokenize(offensive_words)
-    
+
     def remove_stopwords(self, terms):
         result = [term for term in terms if term not in self.stopwords]
         return result
@@ -50,7 +52,7 @@ class PreProcessor:
         terms = self.tokenize(text)
         # Filter out potentially offensive tweets
         if any(term in self.offensive for term in terms):
-            return None
+            return []
         terms = self.remove_stopwords(terms)
         terms = self.stemming(terms)
         return terms
