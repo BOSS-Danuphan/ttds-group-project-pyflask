@@ -7,17 +7,36 @@ class SearchEvaluator():
     def __init__(self, index):
         self.index = index
 
-    def evaluate_query(self, query, ideal_results):
+    def evaluate_query(self, query, ideal_results, verbose=True):
         self.search = SearchEngine(self.index)
         actual_results = self.search.match(query)
-
+        if verbose:
+            print("Query: ", query)
+            print("ideal: ", ideal_results)
+            print("actual: ", actual_results)
+            
         eval_result = EvalResult()
-        eval_result.Precision = self.calculate_avgprecision(actual_results, ideal_results)
+        if len(actual_results) == 0 or len(ideal_results) == 0:
+            return eval_result
+        
+        eval_result.Precision = self.calculate_precision(actual_results, ideal_results)
         eval_result.Recall = self.calculate_recall(actual_results, ideal_results)
         eval_result.RPrecision = self.calculate_rprecision(actual_results, ideal_results)
         eval_result.AveragePrecision = self.calculate_avgprecision(actual_results, ideal_results)
-        eval_result.nDCGat10 = self.calculate_normalized_discounted_cumulative_gain(actual_results, ideal_results, 10)
-        eval_result.nDCGat20 = self.calculate_normalized_discounted_cumulative_gain(actual_results, ideal_results, 20)
+
+        actual_tuples = [(tweet, 1) for tweet in actual_results]
+        ideal_tuples = [(tweet, 1) for tweet in ideal_results]
+        eval_result.nDCGat10 = self.calculate_normalized_discounted_cumulative_gain(actual_tuples, ideal_tuples, 10)
+        eval_result.nDCGat20 = self.calculate_normalized_discounted_cumulative_gain(actual_tuples, ideal_tuples, 20)
+
+        if verbose:
+            print("Precision: ", eval_result.Precision)
+            print("Recall", eval_result.Recall)
+            print("RPrecision", eval_result.Precision)
+            print("Avg Precision", eval_result.AveragePrecision)
+            print("nDCG @ 10", eval_result.nDCGat10)
+            print("nDCG @ 20", eval_result.nDCGat20)
+
         return eval_result
 
     def calculate_precision(self, results, ideal):
@@ -31,7 +50,7 @@ class SearchEvaluator():
     def calculate_rprecision(self, results, ideal):
         return self.calculate_precision(ideal, results[0:len(ideal)])
 
-    def calculate_avgprecision(self, ideal, results):
+    def calculate_avgprecision(self, results, ideal):
         precision_sum = 0.0
         tweet_count = 0
         for idx, tweet in enumerate(results):
@@ -46,10 +65,10 @@ class SearchEvaluator():
 
         if (len(tweet_tfidf_tuples)) == 1:
             return [tweet_tfidf_tuples[0][1]]
-
+        
         for i, tweet_idf_tuple in enumerate(tweet_tfidf_tuples):
             idx = i
-            relevance = tweet_idf_tuple[idx][1]
+            relevance = tweet_idf_tuple[1]
             if (idx == 0):
                 dcg_sum += relevance
                 dcg_index.append(dcg_sum)
