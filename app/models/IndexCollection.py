@@ -35,8 +35,14 @@ class IndexCollection():
             self.export()
 
         tweetID = tweet.Id
+
         # Index tweet text
-        for key in self.preprocesser.preprocess(tweet.Text):
+        terms = self.preprocesser.preprocess(tweet.Text)
+        if terms is None:
+            # Preprocessor returns None if tweet contains offensive terms. Stop processing.
+            return
+
+        for key in terms:
             self.index[key].append(tweetID)
 
         if tweet.VisionResults is None:
