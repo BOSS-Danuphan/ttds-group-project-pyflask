@@ -17,7 +17,7 @@ class TwitterStreamListener(tweepy.StreamListener):
     def on_status(self, status):
         media = self.get_media(status)
         if media is None:
-            return        
+            return
 
         self._tweetCount += 1
 
@@ -36,7 +36,7 @@ class TwitterStreamListener(tweepy.StreamListener):
         # Add tweet to index
         app_index_collection.add_tweet(atweet)
 
-        
+
         if self._tweetCount % 500 == 0:
             print('_tweetCount', self._tweetCount)
 
@@ -60,7 +60,7 @@ class TwitterStreamListener(tweepy.StreamListener):
         # Exclude possibly NSFW tweets
         if hasattr(status, "possibly_sensitive") and status.possibly_sensitive:
             return
-        
+
         # We only want tweets with images
         if not hasattr(status, "entities"):
             return
@@ -87,6 +87,6 @@ class TwitterStreamListener(tweepy.StreamListener):
         media = media[0]
 
         if not "media_url_https" in media.keys() or "url" not in media.keys():
-            return        
-        
+            return
+
         return media
