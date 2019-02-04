@@ -167,6 +167,7 @@ class App extends Component {
                     : <ResultsWall
                         stTweets={this.state.staticResults}
                         rtTweets={this.state.rtResults}
+                        numberOfResults={this.state.numberOfResults}
                     />
                 }
             </div>
