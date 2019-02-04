@@ -109,7 +109,6 @@ class App extends Component {
     }
 
     onStop(event) {
-        console.log('onStop', event);
         if(event){
             const query = this.state.query;
             this.sendGetSearch(query);
