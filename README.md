@@ -9,6 +9,12 @@ Web app: https://ttds-group-project.herokuapp.com/
 git clone https://github.com/BOSS-Danuphan/ttds-group-project-pyflask.git
 cd ttds-group-project-pyflask
 ```
+### For Frontend client
+##### Install the dependencies
+```
+$ npm install
+```
+### For Backend service
 ##### Initialize a virtualenv
 ```
 # For Windows (cmd)
@@ -33,8 +39,13 @@ C:\ttds-group-project-pyflask>
 (venv) $ deactivate
 $
 ```
+### Heroku
+##### buildpacks (nodejs must be the first buildpack)
+1. heroku/nodejs
+2. heroku/python
+
 ## Development
-##### Add local Environment variables
+##### Add local Environment variables (For backend service)
 ```
 $ cp .env-example .env
 ```
@@ -54,8 +65,28 @@ Available configurations:
 * `DOMAIN_URL` (for scheduler job): Domain url
 * `AZURE_BLOB_ACCOUNT` = 'Azure blob storage account name'
 * `AZURE_BLOB_KEY` = 'Azure blob strage account key'
-
-#### Start project
+#### Start project in development
+##### Run frontend client independently
+```
+$ cd client
+$ npm start
+```
+##### Run backend service independently
 ```
 (venv) $ python run.py
+```
+##### Run both frontend client and backend service together
+* Run project as a single service
+i.e. backend service will serve frontend minified files (result from build command of create-react-app)
+```
+(venv) $ npm run dev
+```
+* Alternatively, run project as 2 separated services
+i.e. frontend client and backend service
+```
+(venv) $ npm run dev:separated
+```
+#### Start project in production
+```
+(venv) $ npm run prod
 ```

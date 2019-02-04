@@ -1,4 +1,5 @@
-from flask import Flask, render_template, jsonify, request
+from flask import Flask, render_template, jsonify, request, send_from_directory, safe_join
+import os
 from app import app
 from datetime import datetime
 from app.storage import app_index_collection, app_search
@@ -40,21 +41,47 @@ class StoppableStreamThread(Thread):
 ###########################
 #        Web Route        #
 ###########################
-@app.route('/')
-def hello_world():
-    return render_template('article.html', content='Hello, World!')
+@app.route('/', defaults={'filename': 'index.html'})
+@app.route('/<path:filename>')
+def servefile(filename):
+    staticrootpath = "../client/build"
+    try:
+        return send_from_directory(staticrootpath, filename)
+    except:
+        return send_from_directory(staticrootpath, 'index.html')
+
+@app.route('/static/<string:folder>/<path:filename>')
+def servestatic(folder, filename):
+    staticpath = os.path.join("../client/build/static", folder)
+    print('static:', staticpath, filename)
+    return send_from_directory(staticpath, filename)
 
 @app.route('/ping')
 def ping():
     return 'pong'
 
+@app.route('/api')
+def apihome():
+    return render_template('article.html', content='Hello, World!')
+
 @app.route('/api/search')
 def apisearch():
+    """
+    params:
+        q: Search query
+        limit: the number of results
+    """
     q = request.args.get('q')
     limit = request.args.get('limit')
-    result = app_search.match(q)
+    if limit is not None and limit.isdigit():
+        # if limit >= 0
+        limit = int(limit)
+    else:
+        limit = None
+    results = app_search.match(q, limit)
+
     return jsonify({
-        'results': result,
+        'data': results,
         'ts': datetime.now().strftime(app.config['DATETIME_FORMAT']),
         'message': f'q is {q} and limit is {limit}'
     })

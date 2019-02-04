@@ -10,7 +10,7 @@ class SearchEngine:
     _index_collection = None
     _index = {}
     _preprocessor = PreProcessor()
-    _max_results = 20
+    _default_max_results = 20
 
     _re_bool = re.compile("(.*?)\\b(AND NOT|AND|OR)\\b(.*)")
 
@@ -20,20 +20,24 @@ class SearchEngine:
         self._index = self._index_collection.index
         return
 
-    def match(self, query):
+    def match(self, query, limit=None):
+        results = []
         if not query:
-            return []
+            return results
+        if limit is None or not isinstance(limit, int) or limit <= 0:
+            limit = self._default_max_results
 
         query_type, parts = self.parse_query(query)
         if query_type == QueryType.BOOL:
-            return self.match_strict(query)
+            results = self.match_strict(query, limit)
         else:
-            return self.match_ranked(query)
+            results = self.match_ranked(query, limit)
+        return results
 
-    def match_ranked(self, query):
+    def match_ranked(self, query, limit=None):
         """ Execute a search and returns a list of tweets ranked by TFIDF score"""
         tokens = set(self._preprocessor.preprocess(query))
-        
+
         tweet_lists = [self._index[token] for token in tokens]
         tweet_superset = self.get_union(tweet_lists)
         results = []
@@ -51,11 +55,11 @@ class SearchEngine:
 
             results.append([tweet, qd])
         results.sort(key=lambda x: x[1], reverse=True)
-        
-        # Return list of tweet IDs, not score
-        return [result[0] for result in results[:self._max_results]]
 
-    def match_strict(self, query):
+        # Return list of tweet IDs, not score
+        return [result[0] for result in results[:limit]]
+
+    def match_strict(self, query, limit = None):
         """Execute a boolean search and returns a list of matched tweet IDs."""
         tweets = []
         query_type, parts = self.parse_query(query)

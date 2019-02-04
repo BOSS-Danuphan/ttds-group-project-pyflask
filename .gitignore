@@ -11,3 +11,6 @@ venv/
 
 # Index file
 index.txt
+
+# React App
+/node_modules

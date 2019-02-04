@@ -1,0 +1,15 @@
+.SearchPage{
+    height: calc(100vh - 105px);
+    display: flex;
+    align-items: center;
+    flex-flow: column;
+    justify-content: center;
+    padding: 0 8vw;
+}
+
+@media (max-width: 599px) {
+    .SearchPage{
+        height: unset;
+        padding: 0 4vw;
+    }
+}
