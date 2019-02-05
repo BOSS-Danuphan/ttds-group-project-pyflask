@@ -47,18 +47,17 @@ class SearchEvaluator():
                 precision_sum += (tweet_count / (idx+1.0))
         return precision_sum / len(ideal)
 
-    def calculate_discounted_cumulative_gain(self, tweet_tfidf_tuples):
+    def calculate_discounted_cumulative_gain(self, relevance_ranks):
         dcg_index = []
         dcg_sum = 0.0
 
-        if (len(tweet_tfidf_tuples)) == 1:
-            return [tweet_tfidf_tuples[0][1]]
+        if (len(relevance_ranks)) == 1:
+            return [relevance_ranks[0]]
         
-        for i, tweet_idf_tuple in enumerate(tweet_tfidf_tuples):
+        for i, relevance in enumerate(relevance_ranks):
             idx = i
-            relevance = tweet_idf_tuple[1]
             if (idx == 0):
-                dcg_sum += relevance
+                dcg_sum += 1
                 dcg_index.append(dcg_sum)
                 continue
 
@@ -70,8 +69,11 @@ class SearchEvaluator():
         return dcg_index
 
     def calculate_normalized_discounted_cumulative_gain(self, results, ideal, count):
-        dcg_idx = self.calculate_discounted_cumulative_gain(results)
-        idcg_idx = self.calculate_discounted_cumulative_gain(ideal)
+        relevance_ranks = [1 if result in ideal else 0 for result in results]
+        ideal_ranks = [1] * len(ideal)
+
+        dcg_idx = self.calculate_discounted_cumulative_gain(relevance_ranks)
+        idcg_idx = self.calculate_discounted_cumulative_gain(ideal_ranks)
 
         dcg = (dcg_idx[count-1] if count < len(dcg_idx) else dcg_idx[-1])
         idcg = (idcg_idx[count-1] if count < len(idcg_idx) else idcg_idx[-1])
