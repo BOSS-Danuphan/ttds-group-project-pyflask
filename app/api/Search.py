@@ -9,13 +9,14 @@ class QueryType(Enum):
 class SearchEngine:
     _index_collection = None
     _index = {}
-    _preprocessor = PreProcessor()
+    _preprocessor = None
     _default_max_results = 20
 
     _re_bool = re.compile("(.*?)\\b(AND NOT|AND|OR)\\b(.*)")
 
-    def __init__(self, index):
+    def __init__(self, index, use_stopping=True, use_stemming=True):
         """ Set inverted index. """
+        self._preprocessor = PreProcessor(apply_stemming=use_stemming, apply_stopping=use_stopping)
         self._index_collection = index
         self._index = self._index_collection.index
         return

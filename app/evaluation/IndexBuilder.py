@@ -6,9 +6,8 @@ import math
 
 class IndexBuilder():
     
-    def __init__(self):
-        self.index = IndexCollection()
-                
+    def __init__(self, use_google=True, use_ms=True, google_confidence = 0.5, ms_confidence=0.5, use_stemming=True, use_stopping=True):
+        self.index = IndexCollection(use_google=use_google, use_ms=use_ms, google_confidence = google_confidence, ms_confidence=ms_confidence, use_stemming=use_stemming, use_stopping=use_stopping)
 
     def load(self, examples):
         for example in examples:

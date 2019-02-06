@@ -9,10 +9,12 @@ class PreProcessor:
     _re_apostrophes = re.compile("'")
     _re_non_word_space = re.compile("[^\w\s]") # Non-word and non-white space
 
-    def __init__(self):
+    def __init__(self, apply_stemming = True, apply_stopping = True):
         self.stemmer = PorterStemmer()
         self.stopwords = self.load_stopwords()
         self.offensive = self.load_offensivewords()
+        self.apply_stemming = apply_stemming
+        self.apply_stopping = apply_stopping
 
     def stemming(self, terms):
         result = [self.stemmer.stem(term) for term in terms]
@@ -53,6 +55,9 @@ class PreProcessor:
         # Filter out potentially offensive tweets
         if any(term in self.offensive for term in terms):
             return []
-        terms = self.remove_stopwords(terms)
-        terms = self.stemming(terms)
+        if (self.apply_stopping):
+            terms = self.remove_stopwords(terms)
+        if (self.apply_stemming):
+            terms = self.stemming(terms)
+        
         return terms

@@ -4,11 +4,10 @@ import math
 
 class SearchEvaluator():
     
-    def __init__(self, index):
-        self.index = index
+    def __init__(self, index, use_stemming=True, use_stopping=True):
+        self.search = SearchEngine(index, use_stemming=use_stemming, use_stopping=use_stopping)        
 
     def evaluate_query(self, query, ideal_results):
-        self.search = SearchEngine(self.index)
         actual_results = self.search.match(query)
             
         eval_result = EvalResult()

@@ -9,12 +9,21 @@ class IndexCollection():
     _tweet_count=0
     _initial_tweet_count=0
     _export_frequency = 100
-    _CONF_THRESHOLD = 0.5
 
-    def __init__(self, fileService=None):
+    def __init__(self, fileService=None, use_google=True, use_ms=True, google_confidence = 0.5, ms_confidence=0.5, use_stemming=True, use_stopping=True):
         self.index = defaultdict(list)
-        self.preprocesser = PreProcessor()
+        self.preprocesser = PreProcessor(apply_stemming=use_stemming, apply_stopping=use_stopping)
         self.fileService = fileService
+
+        self.use_google = use_google
+        self.google_confidence = google_confidence
+
+        self.use_ms = use_ms
+        self.ms_confidence = ms_confidence
+
+        self.validate_confidence("google_confience", google_confidence)
+        self.validate_confidence("ms_confidence", ms_confidence)
+        
         if self.fileService is not None:
             self.load()
 
@@ -50,34 +59,35 @@ class IndexCollection():
         if tweet.VisionResults is None or tweet.GoogleResults is None:
             return
 
-
-        """tags: cut above the confidence 50
-            key of list of dictionaries with 'confidence' and 'name'"""
-        # Indexing MS Results
-        # Tags from image
-        for item in tweet.VisionResults.tags:
-            if item.confidence > self._CONF_THRESHOLD:
-                key = item.name
-                #costly to process the enter thing?
-                if tweetID not in self.index[key]:
-                    self.index[key].insert(0,tweetID)
-
-        # Captions from image
-        for caption in tweet.VisionResults.description.captions:
-            if caption.confidence > self._CONF_THRESHOLD:
-                tokens = self.preprocesser.preprocess(caption.text)
-                for key in tokens:                    
-                    if tweetID not in self.index[key]:      
-                        self.index[key].insert(0, tweetID)
-
-        # Indexing Google Results
-        # Label annotations from image
-        for item in tweet.GoogleResults.responses[0].labelAnnotations:
-            if item.score > self._CONF_THRESHOLD:
-                terms = self.preprocesser.preprocess(item.description)
-                for term in terms:
+        if self.use_ms:
+            """tags: cut above the confidence 50
+                key of list of dictionaries with 'confidence' and 'name'"""
+            # Indexing MS Results
+            # Tags from image
+            for item in tweet.VisionResults.tags:
+                if item.confidence > self.ms_confidence:
+                    key = item.name
+                    #costly to process the enter thing?
                     if tweetID not in self.index[key]:
-                        self.index[term].insert(0,tweetID)
+                        self.index[key].insert(0,tweetID)
+
+            # Captions from image
+            for caption in tweet.VisionResults.description.captions:
+                if caption.confidence > self.ms_confidence:
+                    tokens = self.preprocesser.preprocess(caption.text)
+                    for key in tokens:                    
+                        if tweetID not in self.index[key]:      
+                            self.index[key].insert(0, tweetID)
+
+        if self.use_google:
+            # Indexing Google Results
+            # Label annotations from image
+            for item in tweet.GoogleResults.responses[0].labelAnnotations:
+                if item.score > self.google_confidence:
+                    terms = self.preprocesser.preprocess(item.description)
+                    for term in terms:
+                        if tweetID not in self.index[key]:
+                            self.index[term].insert(0,tweetID)
 
     def export(self):
         if self.fileService is None or self._tweet_count <= self._initial_tweet_count:
@@ -88,3 +98,8 @@ class IndexCollection():
         self._initial_tweet_count = obj['tweet_count']
         if(self._tweet_count > 0):
             self.fileService.write(json.dumps(obj))
+
+    
+    def validate_confidence(self, propName, value):
+        if value < 0.0 or value > 1.0:
+            raise Exception("Value of {0} must be between 0 and 1.".format(propName))
