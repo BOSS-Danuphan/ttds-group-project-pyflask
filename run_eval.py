@@ -15,8 +15,6 @@ class EvalParams:
         self.google_confidence = google_confidence
         self.ms_confidence = ms_confidence
 
-
-
 # Load test set
 with open(os.getcwd() + r"\app\evaluation\extended_test_set_with_noise.json", "r") as json_file:
     test_json = json_file.read()
@@ -25,11 +23,12 @@ with open(os.getcwd() + r"\app\evaluation\extended_test_set_with_noise.json", "r
 # Read labelled queries
 queries = {}
 for result in test_set.results:
-    for field in result.labels._fields:
-        if field in queries.keys():
-            queries[field].append(result.id)
-        else:
-            queries[field] = [result.id]
+    tweetID = result.retweeted_status.id if hasattr(result, "retweeted_status") else result.id
+    for field in result.labels._fields:        
+        if field not in queries:
+            queries[field] = []        
+        if tweetID not in queries[field]:
+            queries[field].append(tweetID)
 
 # Configure tests
 tests = [

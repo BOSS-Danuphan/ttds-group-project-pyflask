@@ -28,6 +28,9 @@ class TwitterStreamListener(tweepy.StreamListener):
         atweet.Text = status.text
         atweet.Url = media["url"]
         atweet.ImageUrl = media["media_url_https"]
+        
+        if hasattr(status, "retweeted_status"):
+            atweet.OriginalId = status.retweeted_status.id
 
         if self._useVision:
             vision_json = self._imageAnalyser.analyse_with_ms_vision(atweet.ImageUrl)

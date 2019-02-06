@@ -44,8 +44,8 @@ class IndexCollection():
         if (self._tweet_count % self._export_frequency == 0):
             self.export()
 
-        tweetID = tweet.Id
-
+        tweetID = tweet.OriginalId  if tweet.OriginalId is not None else tweet.Id
+        
         # Index tweet text
         terms = self.preprocesser.preprocess(tweet.Text)
         if terms is None:

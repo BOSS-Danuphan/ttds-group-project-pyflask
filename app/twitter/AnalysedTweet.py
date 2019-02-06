@@ -1,6 +1,7 @@
 class AnalysedTweet:    
-    def __init__(self, tid=None, text=None, url=None, imageUrl=None, hashTags=[], vresults=None, gresults=None):
+    def __init__(self, tid=None, oid=None, text=None, url=None, imageUrl=None, hashTags=[], vresults=None, gresults=None):
         self.Id = tid
+        self.OriginalId = oid
         self.Text = text
         self.Url = url
         self.ImageUrl = imageUrl

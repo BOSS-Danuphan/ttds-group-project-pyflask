@@ -23,7 +23,6 @@ class SearchEvaluator():
         ideal_tuples = [(tweet, 1) for tweet in ideal_results]
         eval_result.nDCGat10 = self.calculate_normalized_discounted_cumulative_gain(actual_tuples, ideal_tuples, 10)
         eval_result.nDCGat20 = self.calculate_normalized_discounted_cumulative_gain(actual_tuples, ideal_tuples, 20)
-
         return eval_result
 
     def calculate_precision(self, results, ideal):
