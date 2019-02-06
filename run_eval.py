@@ -3,7 +3,7 @@ from app.evaluation.SearchEvaluator import SearchEvaluator
 from app.twitter.AnalysedTweet import AnalysedTweet
 from collections import namedtuple
 from collections import defaultdict
-import json, os
+import json, os, math
 
 class EvalParams:    
     def __init__(self, test_label, use_google=True, use_ms=True, use_stopping=True, use_stemming=True, ms_confidence=0.5, google_confidence=0.5):
@@ -14,6 +14,8 @@ class EvalParams:
         self.use_ms = use_ms
         self.google_confidence = google_confidence
         self.ms_confidence = ms_confidence
+
+
 
 # Load test set
 with open(os.getcwd() + r"\app\evaluation\extended_test_set_with_noise.json", "r") as json_file:
@@ -31,6 +33,7 @@ for result in test_set.results:
 
 # Configure tests
 tests = [
+    EvalParams("Default Settings"),
     EvalParams("No stemming", use_stemming=False),
     EvalParams("No stopping", use_stopping=False),
     EvalParams("No stemming or stopping", use_stemming=False, use_stopping=False),
@@ -44,6 +47,7 @@ tests = [
 ]
 
 result_file = open(os.getcwd() + r"\app\evaluation\results.txt", "w")
+test_maps = {}
 
 # Run tests
 for test in tests:
@@ -64,6 +68,7 @@ for test in tests:
             "", "Precision", "Recall", "RPrecision", "Avg Precision", "nDCG @ 10", "nDCG @ 20"
         ))
 
+    avg_precisions = []
     for query in queries:
         result = search_eval.evaluate_query(query, queries[query])
         eval_results.append((query, result))
@@ -71,5 +76,14 @@ for test in tests:
         result_file.write("{0:>9} | {1:9.2f} |  {2:9.2f} |  {3:9.2f} | {4:13.2f} |  {5:9.2f} |  {6:9.2f}\n".format(
             query, result.Precision, result.Recall, result.RPrecision, result.AveragePrecision, result.nDCGat10, result.nDCGat20
         ))
+
+        avg_precisions.append(result.AveragePrecision)
+    mean_avg_prec = float(sum(avg_precisions))/max(len(avg_precisions),1)
+    test_maps[test.label] = mean_avg_prec
+    print("{0:<25} | {1:.4f}".format(test.label, mean_avg_prec))
+    
+result_file.write("\n\n{0:<25} | Mean Average Precision\n".format("Test"))
+for test_label in test_maps:
+    result_file.write("{0:<25} | {1:.4f}\n".format(test_label, test_maps[test_label]))
 
 result_file.close()

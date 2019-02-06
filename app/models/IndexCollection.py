@@ -14,7 +14,7 @@ class IndexCollection():
         self.index = defaultdict(list)
         self.preprocesser = PreProcessor(apply_stemming=use_stemming, apply_stopping=use_stopping)
         self.fileService = fileService
-
+        
         self.use_google = use_google
         self.google_confidence = google_confidence
 
@@ -56,10 +56,7 @@ class IndexCollection():
             if tweetID not in self.index[key]:
                 self.index[key].insert(0,tweetID)
 
-        if tweet.VisionResults is None or tweet.GoogleResults is None:
-            return
-
-        if self.use_ms:
+        if self.use_ms and tweet.VisionResults is not None:
             """tags: cut above the confidence 50
                 key of list of dictionaries with 'confidence' and 'name'"""
             # Indexing MS Results
@@ -79,7 +76,9 @@ class IndexCollection():
                         if tweetID not in self.index[key]:      
                             self.index[key].insert(0, tweetID)
 
-        if self.use_google:
+
+        if self.use_google and tweet.GoogleResults is not None:
+            print("using Google data")
             # Indexing Google Results
             # Label annotations from image
             for item in tweet.GoogleResults.responses[0].labelAnnotations:
