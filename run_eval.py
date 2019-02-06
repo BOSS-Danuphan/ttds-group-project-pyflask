@@ -16,7 +16,7 @@ class EvalParams:
         self.ms_confidence = ms_confidence
 
 # Load test set
-with open(os.getcwd() + r"\app\evaluation\extended_test_set_with_noise.json", "r") as json_file:
+with open(os.getcwd() + r"\app\evaluation\test_sets\set4.json", "r") as json_file:
     test_json = json_file.read()
     test_set = json.loads(test_json, object_hook=lambda obj: namedtuple('result', obj.keys())(*obj.values()))
 

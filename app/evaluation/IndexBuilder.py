@@ -33,6 +33,7 @@ class IndexBuilder():
 
         tweet.ImageUrl = media.media_url_https
         tweet.VisionResults = example.vision_results
+        tweet.GoogleResults = example.google_results
         return tweet
     
     def get_media(self, tweet_json):

@@ -78,15 +78,14 @@ class IndexCollection():
 
 
         if self.use_google and tweet.GoogleResults is not None:
-            print("using Google data")
-            # Indexing Google Results
-            # Label annotations from image
-            for item in tweet.GoogleResults.responses[0].labelAnnotations:
-                if item.score > self.google_confidence:
-                    terms = self.preprocesser.preprocess(item.description)
-                    for term in terms:
-                        if tweetID not in self.index[key]:
-                            self.index[term].insert(0,tweetID)
+            response = tweet.GoogleResults.responses[0]
+            if hasattr(response, "labelAnnotations"):
+                for item in response.labelAnnotations:
+                    if item.score > self.google_confidence:
+                        tokens = self.preprocesser.preprocess(item.description)
+                        for key in tokens:
+                            if tweetID not in self.index[key]:
+                                self.index[key].insert(0,tweetID)
 
     def export(self):
         if self.fileService is None or self._tweet_count <= self._initial_tweet_count:
