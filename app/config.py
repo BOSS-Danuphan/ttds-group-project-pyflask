@@ -18,7 +18,9 @@ class Config(object):
     TWITTER_ACCESS_TOKEN_KEY = os.environ.get('TWITTER_ACCESS_TOKEN_KEY')
     TWITTER_ACCESS_TOKEN_SECRET = os.environ.get('TWITTER_ACCESS_TOKEN_SECRET')
 
+    ENABLE_EXTERNAL_VISION_SERVICE = True if os.environ.get('ENABLE_EXTERNAL_VISION_SERVICE') == '1' else False
     MS_VISION_KEY = os.environ.get('MS_VISION_KEY')
+    GOOGLE_VISION_KEY = os.environ.get('GOOGLE_VISION_KEY')
     AZURE_BLOB_ACCOUNT = os.environ.get('AZURE_BLOB_ACCOUNT')
     AZURE_BLOB_KEY = os.environ.get('AZURE_BLOB_KEY')
 
