@@ -10,7 +10,7 @@ class IndexCollection():
     _initial_tweet_count=0
     _export_frequency = 100
 
-    def __init__(self, fileService=None, use_google=True, use_ms=True, google_confidence = 0.5, ms_confidence=0.5, use_stemming=True, use_stopping=True):
+    def __init__(self, fileService=None, use_google=False, use_ms=False, google_confidence = 0.5, ms_confidence=0.5, use_stemming=True, use_stopping=True):
         self.index = defaultdict(list)
         self.preprocesser = PreProcessor(apply_stemming=use_stemming, apply_stopping=use_stopping)
         self.fileService = fileService
