@@ -44,7 +44,8 @@ class IndexCollection():
             return
 
         for key in terms:
-            self.index[key].append(tweetID)
+            if tweetID not in self.index[key]:
+                self.index[key].insert(0,tweetID)
 
         if tweet.VisionResults is None or tweet.GoogleResults is None:
             return
@@ -58,14 +59,16 @@ class IndexCollection():
             if item.confidence > self._CONF_THRESHOLD:
                 key = item.name
                 #costly to process the enter thing?
-                self.index[key].append(tweetID)
+                if tweetID not in self.index[key]:
+                    self.index[key].insert(0,tweetID)
 
         # Captions from image
         for caption in tweet.VisionResults.description.captions:
             if caption.confidence > self._CONF_THRESHOLD:
                 tokens = self.preprocesser.preprocess(caption.text)
-                for key in tokens:
-                    self.index[key].append(tweetID)
+                for key in tokens:                    
+                    if tweetID not in self.index[key]:      
+                        self.index[key].insert(0, tweetID)
 
         # Indexing Google Results
         # Label annotations from image
@@ -73,7 +76,8 @@ class IndexCollection():
             if item.score > self._CONF_THRESHOLD:
                 terms = self.preprocesser.preprocess(item.description)
                 for term in terms:
-                    self.index[term].append(tweetID)
+                    if tweetID not in self.index[key]:
+                        self.index[term].insert(0,tweetID)
 
     def export(self):
         if self.fileService is None or self._tweet_count <= self._initial_tweet_count:
