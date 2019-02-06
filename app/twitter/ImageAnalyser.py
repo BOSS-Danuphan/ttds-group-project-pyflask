@@ -36,7 +36,7 @@ class ImageAnalyser:
             ('key', self._google_key),
         )
 
-        data = '{"requests":[{"image":{"source":{"imageUri":"https://timedotcom.files.wordpress.com/2016/05/trump-fail-004.jpg"}},"features":[{"type":"WEB_DETECTION"},{"type":"LABEL_DETECTION"},{"type":"FACE_DETECTION"},{"type":"LANDMARK_DETECTION"},{"type":"LOGO_DETECTION"},{"type":"SAFE_SEARCH_DETECTION"},{"type":"IMAGE_PROPERTIES"},{"type":"PRODUCT_SEARCH"},{"type":"TEXT_DETECTION"}]}]}'
+        data = '{"requests":[{"image":{"source":{"imageUri":"' + urlImage + '"}},"features":[{"type":"WEB_DETECTION"},{"type":"LABEL_DETECTION"},{"type":"FACE_DETECTION"},{"type":"LANDMARK_DETECTION"},{"type":"LOGO_DETECTION"},{"type":"SAFE_SEARCH_DETECTION"},{"type":"IMAGE_PROPERTIES"},{"type":"PRODUCT_SEARCH"},{"type":"TEXT_DETECTION"}]}]}'
 
         response = requests.post('https://vision.googleapis.com/v1/images:annotate', headers=headers, params=params, data=data)
 
