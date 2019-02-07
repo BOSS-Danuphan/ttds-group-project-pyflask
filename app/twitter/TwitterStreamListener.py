@@ -3,11 +3,12 @@ import tweepy
 from collections import namedtuple
 from app.storage import app_index_collection
 from app.twitter.AnalysedTweet import AnalysedTweet
-from app.twitter.MSVision import analyse_image
+from app.twitter.ImageAnalyser import ImageAnalyser
 
 class TwitterStreamListener(tweepy.StreamListener):
     _tweetCount = 0
     _useVision = False
+    _imageAnalyser = ImageAnalyser()
 
     def __init__(self, api=None, useVision=False):
         self._tweetCount = 0
@@ -29,9 +30,15 @@ class TwitterStreamListener(tweepy.StreamListener):
         atweet.ImageUrl = media["media_url_https"]
 
         if self._useVision:
-            vision_json = analyse_image(atweet.ImageUrl)
+            vision_json = self._imageAnalyser.analyse_with_ms_vision(atweet.ImageUrl)
+            google_json = self._imageAnalyser.analyse_with_google_vision(atweet.ImageUrl)
+
             vision = json.loads(vision_json, object_hook=lambda obj: namedtuple('result', obj.keys())(*obj.values()))
+            google = json.loads(google_json, object_hook=lambda obj: namedtuple('result', obj.keys())(*obj.values()))
+            
             atweet.VisionResults = vision
+            atweet.GoogleResults = google
+
 
         # Add tweet to index
         app_index_collection.add_tweet(atweet)
