@@ -76,7 +76,6 @@ class IndexCollection():
                         if tweetID not in self.index[key]:      
                             self.index[key].insert(0, tweetID)
 
-
         if self.use_google and tweet.GoogleResults is not None:
             response = tweet.GoogleResults.responses[0]
             if hasattr(response, "labelAnnotations"):
@@ -86,6 +85,14 @@ class IndexCollection():
                         for key in tokens:
                             if tweetID not in self.index[key]:
                                 self.index[key].insert(0,tweetID)
+        
+            if hasattr(response, "logoAnnotations"):
+                for item in response.logoAnnotations:
+                    if item.score > self.google_confidence:
+                        tokens = self.preprocesser.preprocess(item.description)
+                        for key in tokens:
+                                if tweetID not in self.index[key]:
+                                    self.index[key].insert(0,tweetID)
 
     def export(self):
         if self.fileService is None or self._tweet_count <= self._initial_tweet_count:
