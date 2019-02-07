@@ -18,7 +18,7 @@ class FileWriter:
         except FileNotFoundError:
             print("Read content from {} by {} at {}".format(self._file_path, __name__, datetime.now().strftime(app.config['DATETIME_FORMAT'])))
         else:
-            print("Read content by {} at {}".format(__name__, datetime.now().strftime(app.config['DATETIME_FORMAT'])))
+            print("Read content from {} by {} at {}".format(self._file_path, __name__, datetime.now().strftime(app.config['DATETIME_FORMAT'])))
         return content
 
     def write(self, content):
