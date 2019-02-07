@@ -1,6 +1,7 @@
 import re, urllib
 from nltk.stem import PorterStemmer
 from app.utils import safeurlopen
+from nltk.corpus import wordnet as wn
 
 class PreProcessor:
     _re_url = re.compile(r'https?:\/\/(www\.)?[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-z]{2,6}\b([-a-zA-Z0-9@:$%_\+.~#?&//=]*)')
@@ -65,3 +66,14 @@ class PreProcessor:
             terms = self.stemming(terms)
         
         return terms
+
+    def get_synonyms(self, term):
+        """Finds word synonyms and returns them
+        """
+        tempSet = set()
+        for synset in wn.synsets(term):
+            for word in synset.lemma_names():
+                # if "_" in word:
+                #     continue                    
+                tempSet.add(word)
+        return list(tempSet)

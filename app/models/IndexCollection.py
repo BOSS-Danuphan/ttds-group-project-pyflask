@@ -45,6 +45,7 @@ class IndexCollection():
         self._loaded = True
 
     def add_tweet(self, tweet):
+        added_tweet = 0
         if (self._tweet_count % self._export_frequency == 0):
             self.export()
 
@@ -73,7 +74,7 @@ class IndexCollection():
                 if caption.confidence > self.ms_confidence:
                     terms = self.preprocesser.preprocess(caption.text)
                     for term in terms:                    
-                        term_counts[term].vision_count += 1                        
+                        term_counts[term].vision_count += 1            
 
         if self.use_google and tweet.GoogleResults is not None:
             response = tweet.GoogleResults.responses[0]
@@ -82,7 +83,8 @@ class IndexCollection():
                     if label.score > self.google_confidence:
                         terms = self.preprocesser.preprocess(label.description)
                         for term in terms:
-                            term_counts[term].vision_count += 1     
+                            term_counts[term].vision_count += 1
+
         
             if hasattr(response, "logoAnnotations"):
                 for logo in response.logoAnnotations:
@@ -90,7 +92,7 @@ class IndexCollection():
                         terms = self.preprocesser.preprocess(logo.description)
                         for term in terms:
                             term_counts[term].vision_count += 1
-        
+
         for term, term_count in term_counts.items():
             if term_count.text_count == 0 and term_count.vision_count == 0:
                 continue
@@ -98,11 +100,15 @@ class IndexCollection():
                 self.index[term] = {}
             if tweetId not in self.index[term]:
                 self.index[term][tweetId] = [time.time(), 0, 0]
-                self._tweet_count += 1
+                added_tweet += 1
             
             self.index[term][tweetId][0] = time.time()
             self.index[term][tweetId][1] += term_count.text_count
             self.index[term][tweetId][2] += term_count.vision_count
+
+        if added_tweet != 0:
+            self._tweet_count += 1
+
 
     def export(self):
         if self.fileService is None or self._tweet_count <= self._initial_tweet_count:
