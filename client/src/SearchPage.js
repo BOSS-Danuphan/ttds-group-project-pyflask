@@ -190,7 +190,7 @@ class App extends Component {
                     onStop={this.onStop}
                 />
                 {this.isError()
-                    ? <p>Something went wrong.</p>
+                    ? <p style={{height: '100%'}}>Something went wrong.</p>
                     : <ResultsWall
                         stTweets={this.state.staticResults}
                         rtTweets={this.state.rtResults}
