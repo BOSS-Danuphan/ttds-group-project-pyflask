@@ -49,7 +49,7 @@ class IndexCollection():
         if (self._tweet_count % self._export_frequency == 0):
             self.export()
 
-        tweetId = int(tweet.OriginalId  if tweet.OriginalId is not None else tweet.Id)
+        tweetId = str(tweet.OriginalId  if tweet.OriginalId is not None else tweet.Id)
 
         term_counts = defaultdict(TermCount)
 
