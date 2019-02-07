@@ -5,11 +5,11 @@ import math
 class SearchEvaluator():
     
     def __init__(self, index, use_stemming=True, use_stopping=True):
-        self.search = SearchEngine(index, use_stemming=use_stemming, use_stopping=use_stopping)        
+        self.search = SearchEngine(index, use_stemming=use_stemming, use_stopping=use_stopping)
 
     def evaluate_query(self, query, ideal_results):
-        actual_results = self.search.match(query)
-            
+        actual_results = self.search.match(query)       
+
         eval_result = EvalResult()
         if len(actual_results) == 0 or len(ideal_results) == 0:
             return eval_result
@@ -23,7 +23,7 @@ class SearchEvaluator():
         ideal_tuples = [(tweet, 1) for tweet in ideal_results]
         eval_result.nDCGat10 = self.calculate_normalized_discounted_cumulative_gain(actual_tuples, ideal_tuples, 10)
         eval_result.nDCGat20 = self.calculate_normalized_discounted_cumulative_gain(actual_tuples, ideal_tuples, 20)
-
+        eval_result.nDCGat30 = self.calculate_normalized_discounted_cumulative_gain(actual_tuples, ideal_tuples, 30)
         return eval_result
 
     def calculate_precision(self, results, ideal):

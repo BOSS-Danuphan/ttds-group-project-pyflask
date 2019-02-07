@@ -1,5 +1,5 @@
 import os
-import time 
+import time
 import requests
 import operator
 import secrets
@@ -10,7 +10,7 @@ from google.protobuf.json_format import MessageToJson
 from google.cloud import vision
 
 class ImageAnalyser:
-    _region = 'westeurope' 
+    _region = 'westeurope'
     _url = "https://{}.api.cognitive.microsoft.com/vision/v2.0/analyze".format(_region)
     _ms_key = app.config['MS_VISION_KEY']
     _google_key = app.config['GOOGLE_VISION_KEY']
@@ -26,6 +26,9 @@ class ImageAnalyser:
         Parameters:
         urlImage: Image's url
         """
+
+        if not self._google_key:
+            return None
 
         headers = {
             'Accept': 'application/json',
@@ -49,6 +52,10 @@ class ImageAnalyser:
         Parameters:
         urlImage: Image's url
         """
+
+        if not self._ms_key:
+            return None
+
         # API parameters for recognition found in:
         # https://westus.dev.cognitive.microsoft.com/docs/services/5adf991815e1060e6355ad44/operations/56f91f2e778daf14a499e1fa
         params = { 'visualFeatures' : 'Description,Tags,Categories,Faces,ImageType,Color,Adult', 'details' : 'Celebrities,Landmarks' }
@@ -57,7 +64,7 @@ class ImageAnalyser:
         headers['Ocp-Apim-Subscription-Key'] = self._ms_key
         headers['Content-Type'] = 'application/json'
 
-        json = { 'url': urlImage } 
+        json = { 'url': urlImage }
         data = None
 
         result = self.process_request(json, data, headers, params )
@@ -73,36 +80,36 @@ class ImageAnalyser:
         data: Set to none - used for image uploading
         headers: Used to pass the key information and the data type request
         """
-        
+
         retries = 0
         result = None
 
         while True:
             response = requests.request( 'post', self._url, json = json, data = data, headers = headers, params = params )
-            if response.status_code == 429: 
+            if response.status_code == 429:
                 print( "Message: %s" % ( response.json() ) )
 
-                if retries <= self._maxNumRetries: 
-                    time.sleep(1) 
+                if retries <= self._maxNumRetries:
+                    time.sleep(1)
                     retries += 1
                     continue
-                else: 
+                else:
                     print( 'Error: failed after retrying!' )
                     break
 
             elif response.status_code == 200 or response.status_code == 201:
 
-                if 'content-length' in response.headers and int(response.headers['content-length']) == 0: 
+                if 'content-length' in response.headers and int(response.headers['content-length']) == 0:
                     result = None
-                elif 'content-type' in response.headers and isinstance(response.headers['content-type'], str): 
-                    if 'application/json' in response.headers['content-type'].lower(): 
+                elif 'content-type' in response.headers and isinstance(response.headers['content-type'], str):
+                    if 'application/json' in response.headers['content-type'].lower():
                         result = response.json() if response.content else None
-                    elif 'image' in response.headers['content-type'].lower(): 
+                    elif 'image' in response.headers['content-type'].lower():
                         result = response.content
             else:
                 print( "Error code: %d" % ( response.status_code ) )
                 print( "Message: %s" % ( response.json() ) )
 
             break
-            
+
         return result
