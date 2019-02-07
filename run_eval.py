@@ -16,7 +16,7 @@ class EvalParams:
         self.ms_confidence = ms_confidence
 
 # Load test set
-with open(os.getcwd() + r"\app\evaluation\test_sets\set4.json", "r") as json_file:
+with open(os.getcwd() + r"\app\evaluation\test_sets\final_test_set.json", "r") as json_file:
     test_json = json_file.read()
     test_set = json.loads(test_json, object_hook=lambda obj: namedtuple('result', obj.keys())(*obj.values()))
 
@@ -63,8 +63,8 @@ for test in tests:
     eval_results = []
 
     result_file.write ("\n\n{0}\n".format(test.label))
-    result_file.write("{0:>9} | {1:>9} |  {2:>9} | {3:>9} | {4:>13} |  {5:>9} |  {6:>9}\n".format(
-            "", "Precision", "Recall", "RPrecision", "Avg Precision", "nDCG @ 10", "nDCG @ 20"
+    result_file.write("{0:>9} | {1:>9} |  {2:>9} | {3:>9} | {4:>13} | {5:>9} | {6:>9} | {7:>9}\n".format(
+            "", "Precision", "Recall", "RPrecision", "Avg Precision", "nDCG @ 10", "nDCG @ 20", "nDCG @ 30"
         ))
 
     avg_precisions = []
@@ -72,8 +72,8 @@ for test in tests:
         result = search_eval.evaluate_query(query, queries[query])
         eval_results.append((query, result))
 
-        result_file.write("{0:>9} | {1:9.2f} |  {2:9.2f} |  {3:9.2f} | {4:13.2f} |  {5:9.2f} |  {6:9.2f}\n".format(
-            query, result.Precision, result.Recall, result.RPrecision, result.AveragePrecision, result.nDCGat10, result.nDCGat20
+        result_file.write("{0:>9} | {1:9.2f} |  {2:9.2f} |  {3:9.2f} | {4:13.2f} | {5:9.2f} | {6:9.2f} | {7:9.2f}\n".format(
+            query, result.Precision, result.Recall, result.RPrecision, result.AveragePrecision, result.nDCGat10, result.nDCGat20, result.nDCGat30
         ))
 
         avg_precisions.append(result.AveragePrecision)
