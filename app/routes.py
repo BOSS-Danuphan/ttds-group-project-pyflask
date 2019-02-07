@@ -15,13 +15,19 @@ thread = None
 stream = None
 
 def backgroundthread():
+    global thread
     # TODO: Move to new separated file
     print('Background thread started')
 
     global stream
     stream = TwitterStreamBuilder.StreamBuilder()
     print('Stream started')
-    stream.sample()
+    while not thread._stop.is_set():
+        try:
+            stream.sample()
+        except Exception as e:
+            print('Background thread error occurred', e)
+            stream.disconnect()
 
 class StoppableStreamThread(Thread):
     '''Inject streaming control'''
