@@ -41,7 +41,11 @@ class PreProcessor:
 
     def load_offensivewords(self):
         offensive_words = safeurlopen('http://www.bannedwordlist.com/lists/swearWords.txt')
-        return self.tokenize(offensive_words)
+        words = offensive_words.split("\r\n")
+        regexes = []
+        for word in words:
+            regexes.append(re.compile("{0}\b".format(word)))      
+        return regexes
 
     def remove_stopwords(self, terms):
         result = [term for term in terms if term not in self.stopwords]
@@ -51,10 +55,10 @@ class PreProcessor:
         return self._re_url.sub("", text)
 
     def preprocess(self, text):
-        terms = self.tokenize(text)
-        # Filter out potentially offensive tweets
-        if any(term in self.offensive for term in terms):
+        if any(regex.match(text) is not None for regex in self.offensive):
             return []
+
+        terms = self.tokenize(text)
         if (self.apply_stopping):
             terms = self.remove_stopwords(terms)
         if (self.apply_stemming):
