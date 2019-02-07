@@ -14,3 +14,6 @@ index.txt
 
 # React App
 /node_modules
+
+# Test data
+app/evaluation/test_sets/*
