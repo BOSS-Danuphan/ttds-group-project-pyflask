@@ -1,6 +1,7 @@
 import re, urllib
 from nltk.stem import PorterStemmer
 from app.utils import safeurlopen
+from nltk.corpus import wordnet as wn
 
 class PreProcessor:
     _re_url = re.compile(r'https?:\/\/(www\.)?[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-z]{2,6}\b([-a-zA-Z0-9@:$%_\+.~#?&//=]*)')
@@ -41,7 +42,11 @@ class PreProcessor:
 
     def load_offensivewords(self):
         offensive_words = safeurlopen('http://www.bannedwordlist.com/lists/swearWords.txt')
-        return self.tokenize(offensive_words)
+        words = offensive_words.split("\r\n")
+        regexes = []
+        for word in words:
+            regexes.append(re.compile("{0}\b".format(word)))      
+        return regexes
 
     def remove_stopwords(self, terms):
         result = [term for term in terms if term not in self.stopwords]
@@ -51,13 +56,24 @@ class PreProcessor:
         return self._re_url.sub("", text)
 
     def preprocess(self, text):
-        terms = self.tokenize(text)
-        # Filter out potentially offensive tweets
-        if any(term in self.offensive for term in terms):
+        if any(regex.match(text) is not None for regex in self.offensive):
             return []
+
+        terms = self.tokenize(text)
         if (self.apply_stopping):
             terms = self.remove_stopwords(terms)
         if (self.apply_stemming):
             terms = self.stemming(terms)
         
         return terms
+
+    def get_synonyms(self, term):
+        """Finds word synonyms and returns them
+        """
+        tempSet = set()
+        for synset in wn.synsets(term):
+            for word in synset.lemma_names():
+                # if "_" in word:
+                #     continue                    
+                tempSet.add(word)
+        return list(tempSet)

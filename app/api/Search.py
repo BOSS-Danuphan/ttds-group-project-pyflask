@@ -39,23 +39,27 @@ class SearchEngine:
         """ Execute a search and returns a list of tweets ranked by TFIDF score"""
         tokens = set(self._preprocessor.preprocess(query))
 
-        tweet_lists = [self._index[token] for token in tokens]
+        tweet_lists = [self._index[token] for token in tokens if token in self._index]
         tweet_superset = self.get_union(tweet_lists)
         results = []
         for tweet in tweet_superset:
             qd = 0.0
+            last_seen = 0.0
             for token in tokens:
                 if not tweet in self._index[token]:
                     continue
 
                 df = len(self._index[token])
-                tf = 1
+                tf = min(1, self._index[token][tweet][1]) + (self._index[token][tweet][2] * 0.75)
                 idf = math.log10(self._index_collection._tweet_count / df)
                 wtd = (1 + math.log10(tf)) * idf
                 qd += wtd
+                last_seen = max(last_seen, self._index[token][tweet][0])
 
-            results.append([tweet, qd])
-        results.sort(key=lambda x: x[1], reverse=True)
+            results.append([tweet, qd, last_seen])
+        
+        # Sort by TF-IDF, then by date seen, both in reverse
+        results.sort(key=lambda x: (x[1], x[2]), reverse=True)
 
         # Return list of tweet IDs, not score
         return [result[0] for result in results[:limit]]
