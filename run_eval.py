@@ -6,7 +6,7 @@ from collections import defaultdict
 import json, os, math
 
 class EvalParams:    
-    def __init__(self, test_label, use_google=True, use_ms=True, use_stopping=True, use_stemming=True, ms_confidence=0.5, google_confidence=0.5):
+    def __init__(self, test_label, use_google=True, use_ms=True, use_stopping=True, use_stemming=True, ms_confidence=0.6, google_confidence=0.6):
         self.label = test_label
         self.use_stemming = use_stemming
         self.use_stopping = use_stopping

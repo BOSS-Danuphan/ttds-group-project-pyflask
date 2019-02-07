@@ -1,7 +1,12 @@
 from app.api.processor import PreProcessor
 from app.twitter.AnalysedTweet import AnalysedTweet
 from collections import defaultdict
-import json
+import json, time
+
+class TermCount():
+    def __init__(self):
+        self.vision_count = 0
+        self.text_count = 0
 
 class IndexCollection():
     '''This class aims to keep search index in memory'''
@@ -10,8 +15,8 @@ class IndexCollection():
     _initial_tweet_count=0
     _export_frequency = 100
 
-    def __init__(self, fileService=None, use_google=False, use_ms=False, google_confidence = 0.5, ms_confidence=0.5, use_stemming=True, use_stopping=True):
-        self.index = defaultdict(list)
+    def __init__(self, fileService=None, use_google=False, use_ms=False, google_confidence = 0.6, ms_confidence=0.6, use_stemming=True, use_stopping=True):
+        self.index = {}
         self.preprocesser = PreProcessor(apply_stemming=use_stemming, apply_stopping=use_stopping)
         self.fileService = fileService
         
@@ -35,64 +40,69 @@ class IndexCollection():
         if serialized_index and len(serialized_index) > 2:
             json_dict = json.loads(serialized_index)
             self._tweet_count = self._initial_tweet_count = int(json_dict["tweet_count"])
-            self.index = defaultdict(list, json_dict["index"])
+            self.index = dict(json_dict["index"])
 
         self._loaded = True
 
     def add_tweet(self, tweet):
-        self._tweet_count += 1
         if (self._tweet_count % self._export_frequency == 0):
             self.export()
 
-        tweetID = tweet.OriginalId  if tweet.OriginalId is not None else tweet.Id
-        
+        tweetId = int(tweet.OriginalId  if tweet.OriginalId is not None else tweet.Id)
+
+        term_counts = defaultdict(TermCount)
+
         # Index tweet text
         terms = self.preprocesser.preprocess(tweet.Text)
         if terms is None:
             # Preprocessor returns None if tweet contains offensive terms. Stop processing.
             return
 
-        for key in terms:
-            if tweetID not in self.index[key]:
-                self.index[key].insert(0,tweetID)
-
+        for term in terms:
+            term_counts[term].text_count += 1
+            
         if self.use_ms and tweet.VisionResults is not None:
-            """tags: cut above the confidence 50
-                key of list of dictionaries with 'confidence' and 'name'"""
-            # Indexing MS Results
-            # Tags from image
-            for item in tweet.VisionResults.tags:
-                if item.confidence > self.ms_confidence:
-                    key = item.name
-                    #costly to process the enter thing?
-                    if tweetID not in self.index[key]:
-                        self.index[key].insert(0,tweetID)
+            # Image Tags
+            for tag in tweet.VisionResults.tags:
+                if tag.confidence > self.ms_confidence:
+                    term = tag.name
+                    term_counts[term].vision_count += 1
 
             # Captions from image
             for caption in tweet.VisionResults.description.captions:
                 if caption.confidence > self.ms_confidence:
-                    tokens = self.preprocesser.preprocess(caption.text)
-                    for key in tokens:                    
-                        if tweetID not in self.index[key]:      
-                            self.index[key].insert(0, tweetID)
+                    terms = self.preprocesser.preprocess(caption.text)
+                    for term in terms:                    
+                        term_counts[term].vision_count += 1                        
 
         if self.use_google and tweet.GoogleResults is not None:
             response = tweet.GoogleResults.responses[0]
             if hasattr(response, "labelAnnotations"):
-                for item in response.labelAnnotations:
-                    if item.score > self.google_confidence:
-                        tokens = self.preprocesser.preprocess(item.description)
-                        for key in tokens:
-                            if tweetID not in self.index[key]:
-                                self.index[key].insert(0,tweetID)
+                for label in response.labelAnnotations:
+                    if label.score > self.google_confidence:
+                        terms = self.preprocesser.preprocess(label.description)
+                        for term in terms:
+                            term_counts[term].vision_count += 1     
         
             if hasattr(response, "logoAnnotations"):
-                for item in response.logoAnnotations:
-                    if item.score > self.google_confidence:
-                        tokens = self.preprocesser.preprocess(item.description)
-                        for key in tokens:
-                                if tweetID not in self.index[key]:
-                                    self.index[key].insert(0,tweetID)
+                for logo in response.logoAnnotations:
+                    if logo.score > self.google_confidence:
+                        terms = self.preprocesser.preprocess(logo.description)
+                        for term in terms:
+                            term_counts[term].vision_count += 1
+        
+        for term, term_count in term_counts.items():
+            if term_count.text_count == 0 and term_count.vision_count == 0:
+                continue
+            if term not in self.index:
+                self.index[term] = {}
+            if tweetId not in self.index[term]:
+                self.index[term][tweetId] = [time.time(), 0, 0]
+                self._tweet_count += 1
+            
+            self.index[term][tweetId][0] = time.time()
+            self.index[term][tweetId][1] += term_count.text_count
+            self.index[term][tweetId][2] += term_count.vision_count
 
     def export(self):
         if self.fileService is None or self._tweet_count <= self._initial_tweet_count:
@@ -100,7 +110,7 @@ class IndexCollection():
         obj = {}
         obj['tweet_count'] = self._tweet_count
         obj['index'] = self.index
-        self._initial_tweet_count = obj['tweet_count']
+        self._initial_tweet_count = self._tweet_count
         if(self._tweet_count > 0):
             self.fileService.write(json.dumps(obj))
 
