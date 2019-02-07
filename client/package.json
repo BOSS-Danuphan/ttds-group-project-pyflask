@@ -5,5 +5,8 @@
         "test": "react-scripts test",
         "eject": "react-scripts eject",
         "serve": "serve -s build"
+    },
+    "dependencies": {
+        "react-circular-progressbar": "^1.0.0"
     }
 }

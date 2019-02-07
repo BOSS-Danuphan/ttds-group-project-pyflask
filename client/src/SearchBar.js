@@ -1,6 +1,9 @@
 import React, {Component} from 'react';
 import {DebounceInput} from 'react-debounce-input';
 import Switch from "react-switch";
+import ReactCountdownClock from "react-countdown-clock";
+import CircularProgressbar from 'react-circular-progressbar'
+import 'react-circular-progressbar/dist/styles.css';
 import './SearchBar.css';
 
 class SearchBar extends Component {
@@ -12,6 +15,22 @@ class SearchBar extends Component {
         this.handleNumberChange = this.handleNumberChange.bind(this);
         this.handleTimeoutChange = this.handleTimeoutChange.bind(this);
         this.handleStop = this.handleStop.bind(this);
+
+        /*let prog = 0;
+        const timeout = 5000,
+            refresh = 100,
+            x = 100*refresh/timeout;
+
+        const timeS = new Date();
+        const inner = setInterval(() => {
+            if(prog === 100){
+                prog = 0;
+                console.log('REFRESH', new Date() - timeS);
+            } else {
+                prog += x; // x = 100*refresh/timeout
+                console.log('progress - ', prog);
+            }
+        }, refresh);*/
     }
 
     handleChange(event) {
@@ -75,6 +94,10 @@ class SearchBar extends Component {
                                 id="normal-switch"
                                 height={34}
                                 width={70}
+                            />
+                            <CircularProgressbar
+                                className="SearchBar-progress"
+                                percentage={this.props.progress}
                             />
                         </div>
                     </div>

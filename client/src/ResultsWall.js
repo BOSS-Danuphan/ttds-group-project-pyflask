@@ -11,10 +11,10 @@ class ResultsWall extends Component {
         const tweetOption = {'conversation': 'none'};
         const tweetList = this.props.stTweets
             .slice(0, this.props.numberOfResults)
-            .map(tweet => <li key={tweet}><TwitterTweetEmbed tweetId={tweet} options={tweetOption}/></li>);
+            .map(tweet => <li className="static-tweet-wrapper" key={tweet}><TwitterTweetEmbed tweetId={tweet} options={tweetOption}/></li>);
         const rtTweetList = this.props.rtTweets
             .slice(0, this.props.numberOfResults)
-            .map(tweet => <li key={tweet}><TwitterTweetEmbed tweetId={tweet} options={tweetOption}/></li>);
+            .map(tweet => <li className="rt-tweet-wrapper" key={tweet}><TwitterTweetEmbed tweetId={tweet} options={tweetOption}/></li>);
 
         return (
             <div className="ResultsWall">
