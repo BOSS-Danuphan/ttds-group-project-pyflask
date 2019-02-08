@@ -94,7 +94,7 @@ class App extends Component {
 
     onNumberChange(event){
         const number = event.target.value;
-        if(number > 0) {
+        if(number > 0 && number <= 100) {
             this.setState({numberOfResults: event.target.value});
         }
     }
@@ -102,7 +102,7 @@ class App extends Component {
     onTimeoutChange(event){
         const timeout = event.target.value*1000,
             query = this.state.input_query;
-        if (timeout > 0 ) {
+        if (timeout > 0 && timeout <= 3600000) {
             if(this.state.pollingOn){
                 clearInterval(this.state.progress_timer);
                 this.sendGetSearch(query);
@@ -156,7 +156,7 @@ class App extends Component {
     }
 
     diffResults(staticResults, currentRtResults, newResults) {
-        return newResults.filter(x => !staticResults.includes(x) && ! currentRtResults.includes(x));
+        return newResults.filter(x => !staticResults.includes(x) && !currentRtResults.includes(x));
     }
 
     componentWillMount() {

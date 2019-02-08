@@ -10,7 +10,7 @@ class ContactPage extends Component {
                 <div className="Panel">
                     <h3>Contact</h3>
                     <ul>
-                        <li><p>Azizah</p><a href=""><img alt="GitHub Logo" src={logo}/></a></li>
+                        <li><p>Azizah</p><a href="https://github.com/AlAzizah"><img alt="GitHub Logo" src={logo}/></a></li>
                         <li><p>Adam</p><a href="https://github.com/adamdotdev"><img alt="GitHub Logo" src={logo}/></a></li>
                         <li><p>Pavlos</p><a href="https://github.com/pgogousis"><img alt="GitHub Logo" src={logo}/></a></li>
                         <li><p>Hansun</p><a href="https://github.com/joanna350"><img alt="GitHub Logo" src={logo}/></a></li>
