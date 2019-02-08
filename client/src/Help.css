@@ -6,3 +6,49 @@
     justify-content: center;
     padding: 0 8vw;
 }
+
+.Help-sketch{
+    display:flex;
+    flex-flow:column;
+    width: 70px;
+    margin-left: 5vw;
+    opacity: 0.6;
+}
+
+.Help-sketch-top{
+    background: green;
+    margin-bottom: 2px;
+    border-radius: 5px;
+    height: 20px;
+}
+
+.Help-sketch-bottom{
+    display: flex;
+    height: 30px;
+}
+
+.Help-sketch-left{
+    background: red;
+    flex-grow: 2;
+    border-radius: 5px;
+    margin-right: 1px;
+}
+
+.Help-sketch-right{
+    background: blue;
+    flex-grow: 1;
+    border-radius: 5px;
+    margin-left:1px;
+}
+
+.green{
+    color: green;
+}
+
+.blue{
+    color: blue;
+}
+
+.red{
+    color: red;
+}

@@ -28,10 +28,11 @@ class App extends Component {
             firstQuery: true,
             endpoint: process.env.REACT_APP_BACKEND_URL || window.location.origin,
             timeout: 10000,
+            progress: 0,
             limit: 100,
             numberOfResults: 10,
             pollingOn: false,
-            timer: null,
+            progress_timer: null,
             error: null
         };
 
@@ -47,24 +48,27 @@ class App extends Component {
         this.props.history.push(`/search/${query}`);
         axios.get(url)
             .then(res => {
+                // res.data.data = ['653229520015749121', '1092234034284056576', '1092234034284056576', '1092219188989562880', '1092218687392759809', '1092207358426664961'];
                 if (res.data.data.length >= 0) {
-                    const ids = res.data.data.map(id => id.toString());
+                    const ids = [...new Set(res.data.data.map(id => id.toString()))];
                     let newState = {};
                     if (firstQuery) {
                         newState = {
                             error: null,
                             staticResults: ids,
-                            firstQuery: false
+                            firstQuery: false,
+                            progress: 0
                         };
                     } else {
                         const rtTweets = this.diffResults(this.state.staticResults, this.state.rtResults, ids);
-                        newState = {error: null,  rtResults: [...rtTweets, ...this.state.rtResults]}
+                        newState = {error: null,  rtResults: [...rtTweets, ...this.state.rtResults],progress: 0}
                     }
                     this.setState(newState)
                 }
             })
             .catch(err => {
-                this.setState({error: err});
+                clearInterval(this.state.progress_timer);
+                this.setState({error: err, progress: 0});
                 console.log('axios error', err)
             });
     }
@@ -75,37 +79,58 @@ class App extends Component {
     }
 
     onSearchSubmit(event) {
-        clearInterval(this.state.timer);
+        clearInterval(this.state.progress_timer);
         const query = this.state.input_query;
         this.sendGetSearch(query, true);
         this.setState({
             rtResults: [],
             staticResults: [],
             query: query,
-            timer: setInterval(() => this.sendGetSearch(query), this.state.timeout),
+            progress_timer: this.countProgress(query),
             pollingOn: true
         });
         event.preventDefault();
     }
 
     onNumberChange(event){
-        this.setState({numberOfResults: event.target.value});
+        const number = event.target.value;
+        if(number > 0) {
+            this.setState({numberOfResults: event.target.value});
+        }
     }
 
     onTimeoutChange(event){
         const timeout = event.target.value*1000,
             query = this.state.input_query;
-        if(this.state.pollingOn){
-            clearInterval(this.state.timer);
-            this.sendGetSearch(query/*, true*/);
-            this.setState({
-                timeout: timeout,
-                timer: setInterval(() => this.sendGetSearch(query), timeout)
-            });
-        } else {
-            this.setState({timeout: timeout});
+        if (timeout > 0 ) {
+            if(this.state.pollingOn){
+                clearInterval(this.state.progress_timer);
+                this.sendGetSearch(query);
+                this.setState({
+                    timeout: timeout,
+                    progress_timer: this.countProgress(query, timeout)
+                });
+            } else {
+                this.setState({timeout: timeout});
+            }
         }
+    }
 
+    countProgress(query, newTimeout){
+        const timeout = newTimeout || this.state.timeout;
+        const refresh = 200,
+            x = (100*refresh)/timeout;
+        this.setState({progress: 0});
+        const inner = setInterval(() => {
+            if(this.state.progress >= 100){
+                this.sendGetSearch(query);
+                // this.setState({progress: 0});
+            } else {
+                const progressIncrement = this.state.progress + x;
+                this.setState({progress: progressIncrement});
+            }
+        }, refresh);
+        return inner;
     }
 
     onStop(event) {
@@ -113,12 +138,12 @@ class App extends Component {
             const query = this.state.query;
             this.sendGetSearch(query);
             this.setState({
-                timer: setInterval(() => this.sendGetSearch(query), this.state.timeout),
-                pollingOn: event
+                pollingOn: event,
+                progress_timer: this.countProgress(query)
             });
         } else {
-            clearInterval(this.state.timer);
-            this.setState({timer: null, pollingOn: event});
+            clearInterval(this.state.progress_timer);
+            this.setState({timer: null, progress_timer: null, pollingOn: event, progress: 0});
         }
     }
 
@@ -139,13 +164,14 @@ class App extends Component {
             this.sendGetSearch(this.state.query, true);
             this.setState({
                 pollingOn: true,
-                timer: setInterval(() => this.sendGetSearch(this.state.query), this.state.timeout)
+                progress_timer: this.countProgress(this.state.query)
             });
         }
     }
 
     componentWillUnmount() {
         clearInterval(this.state.timer);
+        clearInterval(this.state.progress_timer)
     }
 
     render() {
@@ -155,6 +181,7 @@ class App extends Component {
                     query={this.state.input_query}
                     numberOfResults={this.state.numberOfResults}
                     timeout={this.state.timeout}
+                    progress={this.state.progress}
                     pollingOn={this.state.pollingOn}
                     onSearchChange={this.onSearchChange}
                     onSearchSubmit={this.onSearchSubmit}
@@ -163,7 +190,7 @@ class App extends Component {
                     onStop={this.onStop}
                 />
                 {this.isError()
-                    ? <p>Something went wrong.</p>
+                    ? <p style={{height: '100%'}}>Something went wrong.</p>
                     : <ResultsWall
                         stTweets={this.state.staticResults}
                         rtTweets={this.state.rtResults}

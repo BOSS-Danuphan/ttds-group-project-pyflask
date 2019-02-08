@@ -1,6 +1,8 @@
 import React, {Component} from 'react';
 import {DebounceInput} from 'react-debounce-input';
 import Switch from "react-switch";
+import CircularProgressbar from 'react-circular-progressbar';
+import 'react-circular-progressbar/dist/styles.css';
 import './SearchBar.css';
 
 class SearchBar extends Component {
@@ -75,6 +77,10 @@ class SearchBar extends Component {
                                 id="normal-switch"
                                 height={34}
                                 width={70}
+                            />
+                            <CircularProgressbar
+                                className="SearchBar-progress"
+                                percentage={this.props.progress}
                             />
                         </div>
                     </div>
