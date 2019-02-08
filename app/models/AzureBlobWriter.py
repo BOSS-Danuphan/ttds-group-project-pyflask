@@ -19,17 +19,23 @@ class AzureBlobWriter:
         try:
             # Get the most recently written file with the specified name
             highest_blob = 0
-            blob_name = self._file_path
+            blob_to_load = ""
+            blob_name = self._file_path.rsplit("-", 1)[0]
+            blob_found = False
 
             container = self._blob_service.list_blobs(self._container_name)
             for blob in container:
-                blob_order = int(blob.name.split("-")[1])
-                if blob_order > highest_blob:
+                name_parts = blob.name.rsplit("-", 1)
+                blob_prefix = name_parts[0]
+                blob_order = int(name_parts[1])
+                if blob_prefix == blob_name and blob_order > highest_blob:
                     highest_blob = blob_order
-                    blob_name = blob.name
+                    blob_to_load = blob.name
+                    blob_found = True
 
-            blob = self._blob_service.get_blob_to_text(self._container_name, blob_name)
-            content = blob.content
+            if blob_found:
+                blob = self._blob_service.get_blob_to_text(self._container_name, blob_to_load)
+                content = blob.content
         except:
             print("Unexpected error at {}.read: {}".format(__name__, sys.exc_info()))
         else:

@@ -18,7 +18,7 @@ class TwitterStreamListener(tweepy.StreamListener):
     def on_status(self, status):
         media = self.get_media(status)
         if media is None:
-            return        
+            return
 
         self._tweetCount += 1
 
@@ -29,13 +29,19 @@ class TwitterStreamListener(tweepy.StreamListener):
         atweet.Url = media["url"]
         atweet.ImageUrl = media["media_url_https"]
 
+        if hasattr(status, "retweeted_status"):
+            atweet.OriginalId = status.retweeted_status.id
+
         if self._useVision:
             vision_json = self._imageAnalyser.analyse_with_ms_vision(atweet.ImageUrl)
             google_json = self._imageAnalyser.analyse_with_google_vision(atweet.ImageUrl)
 
-            vision = json.loads(vision_json, object_hook=lambda obj: namedtuple('result', obj.keys())(*obj.values()))
-            google = json.loads(google_json, object_hook=lambda obj: namedtuple('result', obj.keys())(*obj.values()))
-            
+            vision, google = None, None
+            if vision_json is not None:
+                vision = json.loads(vision_json, object_hook=lambda obj: namedtuple('result', obj.keys())(*obj.values()))
+            if google_json is not None:
+                google = json.loads(google_json, object_hook=lambda obj: namedtuple('result', obj.keys())(*obj.values()))
+
             atweet.VisionResults = vision
             atweet.GoogleResults = google
 
@@ -43,7 +49,7 @@ class TwitterStreamListener(tweepy.StreamListener):
         # Add tweet to index
         app_index_collection.add_tweet(atweet)
 
-        
+
         if self._tweetCount % 500 == 0:
             print('_tweetCount', self._tweetCount)
 
@@ -67,7 +73,7 @@ class TwitterStreamListener(tweepy.StreamListener):
         # Exclude possibly NSFW tweets
         if hasattr(status, "possibly_sensitive") and status.possibly_sensitive:
             return
-        
+
         # We only want tweets with images
         if not hasattr(status, "entities"):
             return
@@ -94,6 +100,6 @@ class TwitterStreamListener(tweepy.StreamListener):
         media = media[0]
 
         if not "media_url_https" in media.keys() or "url" not in media.keys():
-            return        
-        
+            return
+
         return media
