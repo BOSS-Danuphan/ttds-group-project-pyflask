@@ -98,6 +98,25 @@ footer {
   padding-right: 20px;
 }
 
+.Panel{
+  margin: 20px 0;
+  padding: 10px 20px;
+  border-radius: 10px;
+  background: #eef3f7;
+  height: 100%;
+  width: 68vw;
+}
+
+.Panel h3{
+  color: #2C71A1;
+  font-size: 18px;
+}
+
+.Panel > p{
+  margin-left: 5vw;
+  margin-right: 5vw;
+}
+
 @media (max-width: 599px) {
   .App-wrapper{
     height:unset;
