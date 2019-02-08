@@ -20,7 +20,7 @@ class AzureBlobWriter:
             # Get the most recently written file with the specified name
             highest_blob = 0
             blob_to_load = ""
-            blob_name = self._file_path.rsplit("-", 1)
+            blob_name = self._file_path.rsplit("-", 1)[0]
             blob_found = False
 
             container = self._blob_service.list_blobs(self._container_name)
