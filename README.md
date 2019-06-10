@@ -3,6 +3,8 @@ Text Technologies for Data Science Group Assignment 2018/19
 
 Web app: https://ttds-group-project.herokuapp.com/
 
+External vision services are currently <span style='font-color:red;'>**disabled**</span>.
+
 ## Setting up
 ##### Clone the repo
 ```
