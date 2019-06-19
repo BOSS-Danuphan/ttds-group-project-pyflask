@@ -5,6 +5,9 @@ Web app: https://ttds-group-project.herokuapp.com/
 
 External vision services are currently <span style='font-color:red;'>**disabled**</span>.
 
+## Description
+Real-time image content search by keyword on Twitter streaming with our own search engine using TFIDF score with data from Twitter Streaming API and additional image information from Google Vision API and Microsoft Vision API
+
 ## Setting up
 ##### Clone the repo
 ```
