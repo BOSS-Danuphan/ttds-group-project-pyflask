@@ -33,7 +33,7 @@ python-dotenv==0.10.1
 pytz==2018.9
 requests==2.21.0
 requests-oauthlib==1.2.0
-rsa==4.0
+rsa==4.1
 singledispatch==3.4.0.3
 six==1.12.0
 tweepy==3.7.0
