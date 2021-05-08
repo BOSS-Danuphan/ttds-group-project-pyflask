@@ -5,7 +5,7 @@
   "dependencies": {
     "axios": "^0.18.0",
     "express": "^4.16.4",
-    "json-bigint": "^0.3.0",
+    "json-bigint": "^1.0.0",
     "react": "^16.7.0",
     "react-circular-progressbar": "^1.0.0",
     "react-debounce-input": "^3.2.0",
