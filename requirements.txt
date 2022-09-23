@@ -23,7 +23,7 @@ Jinja2==2.10
 MarkupSafe==1.1.0
 nltk==3.4
 oauthlib==3.0.0
-protobuf==3.6.1
+protobuf==3.18.3
 pyasn1==0.4.5
 pyasn1-modules==0.2.4
 pycparser==2.19
